@@ -17,7 +17,7 @@ function JobSearch() {
     const fetchJobs = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/jobs/');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/jobs/`);
         setJobs(response.data); // Assuming the response data is an array of jobs
         setFilteredJobs(response.data); // Initially set filtered jobs as all jobs
       } catch (err) {

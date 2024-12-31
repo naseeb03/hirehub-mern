@@ -2,7 +2,7 @@ export const mockJobs = [
   {
     title: "Frontend Developer",
     company: "TechVision Inc.",
-    recruiter: "6754fcb93e4027a025e1bbcd", // Emma Davis (recruiter)
+    recruiter: "6773c177449842814955f1eb", // Emma Davis (recruiter)
     description: "We are looking for a passionate Frontend Developer with expertise in React.js.",
     requirements: "Proficiency in JavaScript, React, and CSS. Minimum 2 years of experience.",
     location: "New York, USA",
@@ -14,7 +14,7 @@ export const mockJobs = [
   {
     title: "Backend Developer",
     company: "CodeCraft Ltd.",
-    recruiter: "6754fcb93e4027a025e1bbcf", // Olivia Thomas (recruiter)
+    recruiter: "6773c177449842814955f1ed", // Olivia Thomas (recruiter)
     description: "Seeking a Backend Developer to design and develop robust APIs.",
     requirements: "Expertise in Node.js and MongoDB. Familiarity with AWS is a plus.",
     location: "San Francisco, USA",
@@ -26,7 +26,7 @@ export const mockJobs = [
   {
     title: "HR Manager",
     company: "HirePros Agency",
-    recruiter: "6754fcb93e4027a025e1bbd1", // Charlotte Garcia (recruiter)
+    recruiter: "6773c177449842814955f1ef", // Charlotte Garcia (recruiter)
     description: "Experienced HR Manager needed to lead recruitment efforts and manage employee relations.",
     requirements: "5+ years of HR experience. Strong communication and interpersonal skills.",
     location: "London, UK",
@@ -38,7 +38,7 @@ export const mockJobs = [
   {
     title: "UI/UX Designer",
     company: "DesignWave Studio",
-    recruiter: "6754fcb93e4027a025e1bbcf", // Olivia Thomas (recruiter)
+    recruiter: "6773c177449842814955f1ed", // Olivia Thomas (recruiter)
     description: "Creative UI/UX Designer to craft intuitive user experiences.",
     requirements: "Proficiency in Figma, Adobe XD. Portfolio showcasing design skills.",
     location: "Berlin, Germany",
@@ -50,7 +50,7 @@ export const mockJobs = [
   {
     title: "Marketing Specialist",
     company: "BrandBoosters",
-    recruiter: "6754fcb93e4027a025e1bbcd", // Emma Davis (recruiter)
+    recruiter: "6773c177449842814955f1eb", // Emma Davis (recruiter)
     description: "Join our team as a Marketing Specialist to strategize and execute marketing campaigns.",
     requirements: "Expertise in digital marketing tools like Google Ads, SEO knowledge.",
     location: "Remote",

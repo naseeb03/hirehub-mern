@@ -21,7 +21,7 @@ function Login() {
     if (formData.email && formData.password) {
       try {
         // Send login request to the backend API
-        const response = await axios.post('http://localhost:5000/api/auth/login', {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
           email: formData.email,
           password: formData.password,
           role: formData.role,
