@@ -76,7 +76,6 @@ function ResumeBuilder() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle resume generation/download logic here
     console.log('Resume Data:', resumeData);
   };
 
@@ -85,7 +84,6 @@ function ResumeBuilder() {
       <h2 className="text-2xl font-bold">Resume Builder</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Personal Information */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
           <div className="grid md:grid-cols-2 gap-4">
@@ -132,7 +130,6 @@ function ResumeBuilder() {
           </div>
         </div>
 
-        {/* Education */}
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold">Education</h3>
@@ -190,7 +187,6 @@ function ResumeBuilder() {
           ))}
         </div>
 
-        {/* Experience */}
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold">Experience</h3>
@@ -249,7 +245,6 @@ function ResumeBuilder() {
           ))}
         </div>
 
-        {/* Skills */}
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold">Skills</h3>

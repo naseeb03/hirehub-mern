@@ -1,21 +1,19 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import connectDB from '../config/db.js';
-import Job from '../models/Job.js'; // Assuming Job model exists
-import { mockJobs } from '../utils/mockJobs.js'; // Assuming this file contains mock data
+import Job from '../models/Job.js';
+import { mockJobs } from '../utils/mockJobs.js';
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config();
 
 const seedJobs = async () => {
   try {
-    await connectDB(); // Establish DB connection
-    await Job.deleteMany(); // Clear existing jobs
+    await connectDB();
+    await Job.deleteMany();
 
-    // Insert mock jobs into the database
     const createdJobs = await Job.insertMany(mockJobs);
     console.log(`${createdJobs.length} jobs have been added.`);
 
-    // Close the connection
     mongoose.connection.close();
     console.log('Database connection closed.');
   } catch (error) {

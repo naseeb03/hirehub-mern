@@ -10,7 +10,7 @@ export const createJob = async (req, res) => {
     return res.status(201).json({
       success: true,
       data: {
-        job,  // The job data will be inside the "data" key
+        job,
       },
     });
   } catch (error) {
@@ -27,7 +27,7 @@ export const getJobs = async (req, res) => {
       .populate('recruiter', 'name company')
       .sort('-createdAt');
 
-    return res.status(200).json(jobs); // Directly return the jobs array at the root level
+    return res.status(200).json(jobs);
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -50,7 +50,7 @@ export const getJobById = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
-        job,  // The job details will be inside the "data" key
+        job,
       },
     });
   } catch (error) {
@@ -84,7 +84,7 @@ export const updateJob = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
-        job: updatedJob,  // The updated job will be inside the "data" key
+        job: updatedJob,
       },
     });
   } catch (error) {

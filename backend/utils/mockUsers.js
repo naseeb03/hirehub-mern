@@ -2,7 +2,7 @@ export const mockUsers = [
   {
     name: 'John Doe',
     email: 'john.doe@example.com',
-    password: 'password123', // plaintext password will be hashed on save
+    password: 'password123',
     role: 'applicant',
     profile: {
       phone: '123-456-7890',

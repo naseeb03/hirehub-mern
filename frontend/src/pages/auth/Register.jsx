@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import axios from 'axios';  // Import Axios
+import axios from 'axios';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -25,7 +25,6 @@ function Register() {
     }
 
     try {
-      // Send registration request to the backend API
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
         name: formData.name,
         email: formData.email,
@@ -33,14 +32,12 @@ function Register() {
         role: formData.role,
       });
 
-      // Assuming the response contains the user data after registration
       login({
         email: formData.email,
         role: formData.role,
         name: formData.name,
       });
 
-      // Navigate to the appropriate dashboard based on the role
       navigate(`/${formData.role}/dashboard`);
     } catch (err) {
       setError('Registration failed. Please try again.');

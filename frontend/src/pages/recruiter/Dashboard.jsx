@@ -6,7 +6,6 @@ function RecruiterDashboard() {
   const [applications, setApplications] = useState([]);
 
   useEffect(() => {
-    // Simulate fetching data
     setJobPostings([
       { id: 1, title: 'Senior Developer', applicants: 12, status: 'Active' },
       { id: 2, title: 'UI Designer', applicants: 8, status: 'Active' }

@@ -5,7 +5,6 @@ function Applications() {
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    // Simulate fetching applications
     setApplications([
       {
         id: 1,

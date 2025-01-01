@@ -21,7 +21,6 @@ function PostJob() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle job posting logic here
     console.log('Job Data:', jobData);
   };
 

@@ -12,19 +12,16 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applicants', applicantRoutes);
 // app.use('/api/recruiters', recruiterRoutes);
 // app.use('/api/profile', profileRoutes);
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
@@ -33,7 +30,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
-  // console.log(process.env.MONGODB_URL)
   await connectDB();
   console.log(`Server running on port ${PORT}`);
 });

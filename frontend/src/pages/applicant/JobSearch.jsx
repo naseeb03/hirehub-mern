@@ -8,18 +8,18 @@ function JobSearch() {
     jobType: 'all'
   });
 
-  const [jobs, setJobs] = useState([]); // State to store fetched jobs
-  const [filteredJobs, setFilteredJobs] = useState([]); // State to store filtered jobs
-  const [loading, setLoading] = useState(true); // State to manage loading state
-  const [error, setError] = useState(null); // State to handle errors
+  const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/jobs/`);
-        setJobs(response.data); // Assuming the response data is an array of jobs
-        setFilteredJobs(response.data); // Initially set filtered jobs as all jobs
+        setJobs(response.data);
+        setFilteredJobs(response.data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -28,12 +28,11 @@ function JobSearch() {
     };
 
     fetchJobs();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
     
-    // Filter jobs based on search parameters
     const filtered = jobs.filter((job) => {
       const matchesKeyword =
         job.title.toLowerCase().includes(searchParams.keyword.toLowerCase()) ||
@@ -45,21 +44,19 @@ function JobSearch() {
       return matchesKeyword && matchesLocation && matchesJobType;
     });
 
-    setFilteredJobs(filtered); // Update the filtered jobs state
+    setFilteredJobs(filtered);
   };
 
   const handleClearFilters = () => {
-    // Clear all filters and show all jobs again
     setSearchParams({
       keyword: '',
       location: '',
       jobType: 'all'
     });
-    setFilteredJobs(jobs); // Reset to all jobs
+    setFilteredJobs(jobs);
   };
 
   const handleApply = (jobId) => {
-    // Implement apply logic here
     console.log('Applying to job:', jobId);
   };
 

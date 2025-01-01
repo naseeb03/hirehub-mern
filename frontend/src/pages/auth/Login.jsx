@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import axios from 'axios';  // Import Axios
+import axios from 'axios';
 
 function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: 'applicant',
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -17,28 +16,24 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    // Validate form data
     if (formData.email && formData.password) {
       try {
-        // Send login request to the backend API
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
           email: formData.email,
           password: formData.password,
-          role: formData.role,
         });
 
-        // Assuming response contains the user data
+        const user = response.data.data
+        
         login({
           email: formData.email,
-          role: formData.role,
-          name: response.data.name,  // Replace with actual data from backend
+          role: user.role,
+          name: user.name,
         });
 
-        // Navigate to the dashboard based on role
-        navigate(`/${formData.role}/dashboard`);
+        navigate(`/${user.role}/dashboard`);
       } catch (err) {
         if (err.response) {
-          // Check the error status and message from the backend
           if (err.response.status === 401) {
             setError('Incorrect password. Please try again.');
           } else if (err.response.status === 404) {
@@ -95,19 +90,6 @@ function Login() {
             className="w-full p-2 border rounded-md"
             required
           />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 mb-2">Role</label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="applicant">Applicant</option>
-            <option value="recruiter">Recruiter</option>
-          </select>
         </div>
 
         <button
