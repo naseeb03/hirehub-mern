@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
@@ -10,7 +10,14 @@ function Login() {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { user, login } = useAuth();
+
+  // Redirect to dashboard if the user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate(`/${user.role}/dashboard`, { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,15 +25,18 @@ function Login() {
 
     if (formData.email && formData.password) {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-          email: formData.email,
-          password: formData.password,
-        });
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/login`,
+          {
+            email: formData.email,
+            password: formData.password,
+          }
+        );
 
-        const user = response.data.data
-        
+        const user = response.data;
+
         login({
-          email: formData.email,
+          email: user.email,
           role: user.role,
           name: user.name,
         });
@@ -60,7 +70,7 @@ function Login() {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Login to HireHub</h2>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}

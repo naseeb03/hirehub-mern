@@ -50,7 +50,6 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if the user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({
@@ -70,14 +69,13 @@ export const login = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: 'Login successful',
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
-      },
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      token: generateToken(user._id),
     });
+    
   } catch (error) {
     return res.status(500).json({
       success: false,
