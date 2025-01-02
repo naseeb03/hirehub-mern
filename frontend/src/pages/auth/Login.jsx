@@ -12,7 +12,6 @@ function Login() {
   const navigate = useNavigate();
   const { user, login } = useAuth();
 
-  // Redirect to dashboard if the user is already logged in
   useEffect(() => {
     if (user) {
       navigate(`/${user.role}/dashboard`, { replace: true });
@@ -39,6 +38,7 @@ function Login() {
           email: user.email,
           role: user.role,
           name: user.name,
+          token: user.token,
         });
 
         navigate(`/${user.role}/dashboard`);

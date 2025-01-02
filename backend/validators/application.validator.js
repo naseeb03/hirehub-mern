@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 
-export const applicationValidator = [
+export const applicationStatusValidator = [
   body('coverLetter')
     .optional()
     .trim()

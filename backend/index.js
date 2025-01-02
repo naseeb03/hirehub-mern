@@ -5,8 +5,8 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
 import jobRoutes from './routes/job.routes.js';
 import applicantRoutes from './routes/applicant.routes.js';
-// import recruiterRoutes from './routes/recruiter.routes.js';
-// import profileRoutes from './routes/profile.routes.js';
+import recruiterRoutes from './routes/recruiter.routes.js';
+import profileRoutes from './routes/profile.routes.js';
 
 dotenv.config();
 
@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applicants', applicantRoutes);
-// app.use('/api/recruiters', recruiterRoutes);
-// app.use('/api/profile', profileRoutes);
+app.use('/api/recruiters', recruiterRoutes);
+app.use('/api/profile', profileRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

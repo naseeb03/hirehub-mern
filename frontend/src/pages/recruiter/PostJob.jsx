@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 function PostJob() {
   const [jobData, setJobData] = useState({
@@ -12,6 +14,10 @@ function PostJob() {
     benefits: ''
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
+
   const handleChange = (e) => {
     setJobData({
       ...jobData,
@@ -19,14 +25,46 @@ function PostJob() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Job Data:', jobData);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const token = user?.token;
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/jobs/`, jobData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      setJobData({
+        title: '',
+        company: '',
+        location: '',
+        type: 'full-time',
+        salary: '',
+        description: '',
+        requirements: '',
+        benefits: ''
+      });
+    } catch (err) {
+      console.error('Error posting job:', err);
+      setError('Failed to post job. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Post a New Job</h2>
+
+      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white p-6 rounded-lg shadow">
@@ -139,8 +177,9 @@ function PostJob() {
           <button
             type="submit"
             className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+            disabled={isLoading}
           >
-            Post Job
+            {isLoading ? 'Posting...' : 'Post Job'}
           </button>
         </div>
       </form>
