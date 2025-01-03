@@ -26,7 +26,11 @@ const userSchema = new mongoose.Schema({
     bio: String,
     company: String, // for recruiters
     position: String // for recruiters
-  }
+  },
+  savedJobs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Job'
+  }]
 }, 
 {
   timestamps: true

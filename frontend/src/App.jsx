@@ -12,6 +12,7 @@ import PostJob from './pages/recruiter/PostJob';
 import Profile from './pages/Profile';
 import ResumeBuilder from './pages/applicant/ResumeBuilder';
 import Applications from './pages/recruiter/Applications';
+import SavedJobs from './pages/applicant/SavedJobs'; // Import the SavedJobs component
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="dashboard" element={<ApplicantDashboard />} />
             <Route path="jobs" element={<JobSearch />} />
             <Route path="resume-builder" element={<ResumeBuilder />} />
+            <Route path="saved-jobs" element={<SavedJobs />} />
           </Route>
           
           <Route path="recruiter">

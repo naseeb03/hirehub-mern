@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 function JobSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -12,6 +13,7 @@ function JobSearch() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -62,16 +64,26 @@ function JobSearch() {
   };
 
   const handleSaveJob = async (jobId) => {
-    // try {
-    //   const response = await axios.post(`/api/applicants/${import.meta.env.VITE_USER_ID}/save-job`, {
-    //     jobId,
-    //   });
-    //   alert(response.data.message || 'Job saved successfully!');
-    // } catch (error) {
-    //   console.error('Error saving job:', error);
-    //   alert('Failed to save job.');
-    // }
-    console.log("save job", jobId);
+    try {
+      const token = user?.token;
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/applicants/save-jobs`,
+        { jobId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert(response.data.message || 'Job saved successfully!');
+    } catch (error) {
+      console.error('Error saving job:', error);
+      alert('Failed to save job.');
+    }
   };
 
   return (
