@@ -5,7 +5,7 @@ function JobSearch() {
   const [searchParams, setSearchParams] = useState({
     keyword: '',
     location: '',
-    jobType: 'all'
+    jobType: 'all',
   });
 
   const [jobs, setJobs] = useState([]);
@@ -32,14 +32,15 @@ function JobSearch() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    
+
     const filtered = jobs.filter((job) => {
       const matchesKeyword =
         job.title.toLowerCase().includes(searchParams.keyword.toLowerCase()) ||
         job.company.toLowerCase().includes(searchParams.keyword.toLowerCase());
       const matchesLocation =
         job.location.toLowerCase().includes(searchParams.location.toLowerCase());
-      const matchesJobType = searchParams.jobType === 'all' || job.type === searchParams.jobType;
+      const matchesJobType =
+        searchParams.jobType === 'all' || job.type === searchParams.jobType;
 
       return matchesKeyword && matchesLocation && matchesJobType;
     });
@@ -60,6 +61,19 @@ function JobSearch() {
     console.log('Applying to job:', jobId);
   };
 
+  const handleSaveJob = async (jobId) => {
+    // try {
+    //   const response = await axios.post(`/api/applicants/${import.meta.env.VITE_USER_ID}/save-job`, {
+    //     jobId,
+    //   });
+    //   alert(response.data.message || 'Job saved successfully!');
+    // } catch (error) {
+    //   console.error('Error saving job:', error);
+    //   alert('Failed to save job.');
+    // }
+    console.log("save job", jobId);
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Search Jobs</h2>
@@ -71,7 +85,9 @@ function JobSearch() {
             <input
               type="text"
               value={searchParams.keyword}
-              onChange={(e) => setSearchParams({ ...searchParams, keyword: e.target.value })}
+              onChange={(e) =>
+                setSearchParams({ ...searchParams, keyword: e.target.value })
+              }
               className="w-full p-2 border rounded-md"
               placeholder="Job title, skills, or company"
             />
@@ -82,7 +98,9 @@ function JobSearch() {
             <input
               type="text"
               value={searchParams.location}
-              onChange={(e) => setSearchParams({ ...searchParams, location: e.target.value })}
+              onChange={(e) =>
+                setSearchParams({ ...searchParams, location: e.target.value })
+              }
               className="w-full p-2 border rounded-md"
               placeholder="City, state, or remote"
             />
@@ -92,7 +110,9 @@ function JobSearch() {
             <label className="block text-gray-700 mb-2">Job Type</label>
             <select
               value={searchParams.jobType}
-              onChange={(e) => setSearchParams({ ...searchParams, jobType: e.target.value })}
+              onChange={(e) =>
+                setSearchParams({ ...searchParams, jobType: e.target.value })
+              }
               className="w-full p-2 border rounded-md"
             >
               <option value="all">All Types</option>
@@ -112,7 +132,6 @@ function JobSearch() {
         </button>
       </form>
 
-      {/* Clear Filters Button */}
       <button
         onClick={handleClearFilters}
         className="mt-4 bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700"
@@ -144,12 +163,20 @@ function JobSearch() {
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleApply(job._id)} // Use job._id for the apply button
-                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-                >
-                  Apply Now
-                </button>
+                <div className="space-x-2">
+                  <button
+                    onClick={() => handleApply(job._id)}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                  >
+                    Apply Now
+                  </button>
+                  <button
+                    onClick={() => handleSaveJob(job._id)}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+                  >
+                    Save Job
+                  </button>
+                </div>
               </div>
               <p className="mt-4 text-gray-700">{job.description}</p>
             </div>
