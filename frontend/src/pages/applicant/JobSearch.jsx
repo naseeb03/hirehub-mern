@@ -71,7 +71,7 @@ function JobSearch() {
       }
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/applicants/save-jobs`,
+        `${import.meta.env.VITE_API_URL}/applicants/save-job`,
         { jobId },
         {
           headers: {

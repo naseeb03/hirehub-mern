@@ -1,82 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 function SavedJobs() {
-  // const [savedJobs, setSavedJobs] = useState([]);
+  const [savedJobs, setSavedJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
-  const [savedJobs, setSavedJobs] = useState([
-    {
-      _id: '1',
-      title: 'Software Engineer',
-      company: 'Tech Solutions',
-      location: 'New York, NY',
-      type: 'Full-Time',
-      salary: '$100,000/year',
-      description: 'Develop and maintain web applications using modern frameworks.',
-    },
-    {
-      _id: '2',
-      title: 'Frontend Developer',
-      company: 'Web Creations',
-      location: 'San Francisco, CA',
-      type: 'Part-Time',
-      salary: '$50/hour',
-      description: 'Design and implement user interfaces for various clients.',
-    },
-    {
-      _id: '3',
-      title: 'Backend Developer',
-      company: 'Data Systems Inc.',
-      location: 'Remote',
-      type: 'Contract',
-      salary: '$80/hour',
-      description: 'Build and optimize backend systems for high-performance applications.',
-    },
-  ]);
+  useEffect(() => {
+    const fetchSavedJobs = async () => {
+      try {
+        const token = user?.token;
+        if (!token) {
+          throw new Error('No token found');
+        }
+        setLoading(true);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/saved-jobs`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setSavedJobs(Array.isArray(response.data) ? response.data : []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-
-  // useEffect(() => {
-  //   const fetchSavedJobs = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/saved-jobs`, {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem('token')}`
-  //         }
-  //       });
-  //       setSavedJobs(response.data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchSavedJobs();
-  // }, []);
+    fetchSavedJobs();
+  }, [user]);
 
   const handleApply = (jobId) => {
     console.log('Applying to job:', jobId);
   };
 
   const handleUnsaveJob = async (jobId) => {
-    // try {
-    //   const response = await axios.delete(
-    //     `${import.meta.env.VITE_API_URL}/applicants/saved-jobs/${jobId}`,
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${localStorage.getItem('token')}`
-    //       }
-    //     }
-    //   );
-    //   setSavedJobs(savedJobs.filter((job) => job._id !== jobId));
-    //   alert(response.data.message || 'Job unsaved successfully!');
-    // } catch (error) {
-    //   console.error('Error unsaving job:', error);
-    //   alert('Failed to unsave job.');
-    // }
     console.log("job unsaved", jobId)
   };
 
