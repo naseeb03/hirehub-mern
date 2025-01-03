@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
+import ResumeModal from '../../components/ResumeModal';
+import useApplyJob from '../../hooks/useApplyJob';
 
 function SavedJobs() {
   const [savedJobs, setSavedJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { user } = useAuth();
+  const { applyJob, showModal, setShowModal, handleUpload } = useApplyJob();
 
   useEffect(() => {
     const fetchSavedJobs = async () => {
@@ -32,16 +35,17 @@ function SavedJobs() {
     fetchSavedJobs();
   }, [user]);
 
-  const handleApply = (jobId) => {
-    console.log('Applying to job:', jobId);
-  };
-
   const handleUnsaveJob = async (jobId) => {
     console.log("job unsaved", jobId)
   };
 
   return (
     <div className="space-y-6">
+      <ResumeModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onUpload={handleUpload}
+      />
       <h2 className="text-2xl font-bold">Saved Jobs</h2>
 
       <div className="space-y-4">
@@ -70,7 +74,7 @@ function SavedJobs() {
                 </div>
                 <div className="space-x-2">
                   <button
-                    onClick={() => handleApply(job._id)}
+                    onClick={() => applyJob(job._id)}
                     className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
                   >
                     Apply Now

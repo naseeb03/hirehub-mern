@@ -7,6 +7,7 @@ import jobRoutes from './routes/job.routes.js';
 import applicantRoutes from './routes/applicant.routes.js';
 import recruiterRoutes from './routes/recruiter.routes.js';
 import profileRoutes from './routes/profile.routes.js';
+import fileUpload from 'express-fileupload';
 
 dotenv.config();
 
@@ -15,6 +16,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/tmp/',
+}));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);

@@ -28,4 +28,11 @@ router.get(
   getSavedJobs
 );
 
+router.post(
+  '/upload-resume',
+  protect,
+  authorize('applicant'),
+  handleFileUpload
+);
+
 export default router;
