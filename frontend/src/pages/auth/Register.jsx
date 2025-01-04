@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -45,6 +46,7 @@ function Register() {
       });
 
       navigate(`/${formData.role}/dashboard`);
+      toast.success(response.data.message || 'Registered successfully!');
     } catch (err) {
       setError('Registration failed. Please try again.');
     }

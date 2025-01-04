@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 function PostJob() {
   const [jobData, setJobData] = useState({
@@ -41,6 +42,8 @@ function PostJob() {
           Authorization: `Bearer ${token}`
         }
       });
+
+      toast.success(response.data.message || 'Job posted successfully!');
 
       setJobData({
         title: '',

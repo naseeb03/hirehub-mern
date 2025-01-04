@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 function useApplyJob() {
   const { user } = useAuth();
@@ -29,16 +30,16 @@ function useApplyJob() {
           },
         }
       );
-      alert('Job applied successfully!');
+      toast.success('Job applied successfully!');
     } catch (err) {
       console.error('Error applying for job:', err);
-      alert('Failed to apply for job.');
+      toast.error('Failed to apply for job.');
     }
   };
 
   const handleUpload = async (file) => {
     if (!file) {
-      alert('Please select a file to upload');
+      toast.error('Please select a file to upload');
       return;
     }
 
@@ -57,11 +58,11 @@ function useApplyJob() {
           'Authorization': `Bearer ${token}`,
         },
       });
-      alert('File uploaded successfully');
+      toast.success('File uploaded successfully');
       handleUploadSuccess(response.data);
     } catch (error) {
       console.error('Error uploading file:', error);
-      alert('Failed to upload file.');
+      toast.error('Failed to upload file.');
     }
   };
 

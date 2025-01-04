@@ -40,3 +40,24 @@ export const getSavedJobs = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
+export const unsaveJob = async (req, res) => {
+  const { jobId } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const jobIndex = user.savedJobs.indexOf(jobId);
+    if (jobIndex === -1) {
+      return res.status(400).json({ message: 'Job not saved' });
+    }
+
+    user.savedJobs.splice(jobIndex, 1);
+    await user.save();
+
+    res.status(200).json({ message: 'Job unsaved successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};

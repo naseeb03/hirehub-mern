@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -42,6 +43,7 @@ function Login() {
         });
 
         navigate(`/${user.role}/dashboard`);
+        toast.success('Logged in successfully!');
       } catch (err) {
         if (err.response) {
           if (err.response.status === 401) {

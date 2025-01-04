@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
+import { toast } from 'react-toastify';
 
 function JobSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -17,6 +18,7 @@ function JobSearch() {
   const [error, setError] = useState(null);
   const { user } = useAuth();
   const { applyJob, showModal, setShowModal, handleUpload } = useApplyJob();
+  const [savedJobs, setSavedJobs] = useState([]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -32,7 +34,24 @@ function JobSearch() {
       }
     };
 
+    const fetchSavedJobs = async () => {
+      try {
+        const token = user?.token;
+        if (!token) return;
+  
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/saved-jobs`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSavedJobs(response.data);
+      } catch (error) {
+        console.error('Error fetching saved jobs:', error);
+      }
+    };
+
     fetchJobs();
+    fetchSavedJobs();
   }, []);
 
   const handleSearch = (e) => {
@@ -49,6 +68,39 @@ function JobSearch() {
     });
     setFilteredJobs(filtered);
   };
+
+  const handleSaveJob = async (jobId) => {
+    const currentSavedJobs = Array.isArray(savedJobs) ? savedJobs : [];
+  
+    if (currentSavedJobs.some(job => job._id === jobId)) {
+      toast.error('Job already saved');
+      return;
+    }
+  
+    try {
+      const token = user?.token;
+      if (!token) {
+        throw new Error('No token found');
+      }
+  
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/applicants/save-job`,
+        { jobId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      toast.success(response.data.message || 'Job saved successfully!');
+      setSavedJobs([...currentSavedJobs, { _id: jobId }]);
+    } catch (error) {
+      console.error('Error saving job:', error);
+      toast.error('Failed to save job.');
+    }
+  };
+  
 
   const handleClearFilters = () => {
     setSearchParams({

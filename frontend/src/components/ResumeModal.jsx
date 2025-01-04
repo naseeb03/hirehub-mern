@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const ResumeModal = ({ show, onClose, onUpload }) => {
   const [file, setFile] = useState(null);
@@ -12,7 +13,7 @@ const ResumeModal = ({ show, onClose, onUpload }) => {
     if (file) {
       onUpload(file);
     } else {
-      alert('Please select a file to upload');
+      toast.error('Please select a file to upload');
     }
   };
 
