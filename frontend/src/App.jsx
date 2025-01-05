@@ -13,8 +13,11 @@ import JobSearch from './pages/applicant/JobSearch';
 import PostJob from './pages/recruiter/PostJob';
 import Profile from './pages/Profile';
 import ResumeBuilder from './pages/applicant/ResumeBuilder';
-import Applications from './pages/recruiter/Applications';
+import AllApplications from './pages/recruiter/Applications';
 import SavedJobs from './pages/applicant/SavedJobs';
+import JobAnalytics from './pages/recruiter/JobAnalytics';
+import YourApplications from './pages/applicant/Applications';
+import JobPostings from './pages/recruiter/JobPostings';
 
 function App() {
   return (
@@ -32,12 +35,15 @@ function App() {
               <Route path="jobs" element={<JobSearch />} />
               <Route path="resume-builder" element={<ResumeBuilder />} />
               <Route path="saved-jobs" element={<SavedJobs />} />
+              <Route path="applications" element={<YourApplications />} />
             </Route>
             
             <Route path="recruiter">
               <Route path="dashboard" element={<RecruiterDashboard />} />
               <Route path="post-job" element={<PostJob />} />
-              <Route path="applications" element={<Applications />} />
+              <Route path="applications" element={<AllApplications />} />
+              <Route path="analytics" element={<JobAnalytics />} />
+              <Route path="jobs" element={<JobPostings />} />
             </Route>
             
             <Route path="profile" element={<Profile />} />

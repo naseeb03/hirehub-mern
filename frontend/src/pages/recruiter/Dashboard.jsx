@@ -35,8 +35,8 @@ function RecruiterDashboard() {
               </div>
             ))}
           </div>
-          <Link to="/recruiter/post-job" className="text-blue-600 hover:underline block mt-4">
-            Post a new job
+          <Link to="/recruiter/jobs" className="text-blue-600 hover:underline block mt-4">
+            View your job postings
           </Link>
         </div>
 

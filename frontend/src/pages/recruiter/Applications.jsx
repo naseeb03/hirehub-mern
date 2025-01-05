@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function Applications() {
+function AllApplications() {
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('all');
 
@@ -133,4 +133,4 @@ function Applications() {
   );
 }
 
-export default Applications;
+export default AllApplications;
