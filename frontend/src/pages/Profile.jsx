@@ -1,33 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function Profile() {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
-    name: user.name || '',
-    email: user.email || '',
+    name: '',
+    email: '',
     phone: '',
     location: '',
-    bio: ''
+    bio: '',
+    company: '',
+    position: ''
   });
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = user?.token;
+        if (!token) return;
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/profile`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        const profileData = response.data.data;
+        setFormData({
+          name: profileData.name,
+          email: profileData.email,
+          phone: profileData.profile?.phone || '',
+          location: profileData.profile?.location || '',
+          bio: profileData.profile?.bio || '',
+          company: profileData.profile?.company || '',
+          position: profileData.profile?.position || '',
+        });
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle profile update logic here
-    console.log('Profile updated:', formData);
+    try {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      setError(null)
+      toast.success(response.data.message || 'Profile updated successfully!');
+    } catch (error) {
+      if (error.response) {
+        setError(error.response.data.message);
+        toast.error(error.response.data.message);
+      } else {
+        setError('An unexpected error occurred');
+        toast.error('An unexpected error occurred');
+      }
+    }
   };
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
-      
+      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+        <span className="block sm:inline">{error}</span>
+      </div>}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-gray-700 mb-2">Full Name</label>
@@ -83,6 +133,32 @@ function Profile() {
             className="w-full p-2 border rounded-md h-32"
           />
         </div>
+
+        {user.role === 'recruiter' && (
+          <>
+            <div>
+              <label className="block text-gray-700 mb-2">Company</label>
+              <input
+                type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 mb-2">Position</label>
+              <input
+                type="text"
+                name="position"
+                value={formData.position}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+          </>
+        )}
 
         <button
           type="submit"

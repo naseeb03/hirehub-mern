@@ -6,8 +6,6 @@ export const saveJob = async (req, res) => {
 
   try {
     const user = await User.findById(req.user.id);
-    console.log(user)
-    console.log(req.user.id)
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const job = await Job.findById(jobId);

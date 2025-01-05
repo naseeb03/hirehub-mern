@@ -24,13 +24,13 @@ export const profileValidator = [
     .withMessage('Bio must not exceed 500 characters'),
   
   body('company')
-    .optional()
+    .optional({ nullable: true, checkFalsy: true })
     .trim()
     .isLength({ min: 2 })
     .withMessage('Company name must be at least 2 characters long'),
   
   body('position')
-    .optional()
+    .optional({ nullable: true, checkFalsy: true })
     .trim()
     .isLength({ min: 2 })
     .withMessage('Position must be at least 2 characters long')
