@@ -28,7 +28,7 @@ export const applyForJob = async (req, res) => {
     const application = await Application.create({
       job: req.params.jobId,
       applicant: req.user._id,
-      resume: req.file.path, // Assuming req.file.path contains the Cloudinary URL
+      resume: req.body.resume,
       coverLetter: req.body.coverLetter,
     });
 

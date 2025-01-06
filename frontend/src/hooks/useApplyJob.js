@@ -8,13 +8,12 @@ function useApplyJob() {
   const [showModal, setShowModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
 
-  const applyJob = (jobId) => {
+  const applyJob = async (jobId) => {
     setSelectedJobId(jobId);
     setShowModal(true);
   };
 
   const handleUploadSuccess = async (data) => {
-    console.log('Upload successful:', data);
     setShowModal(false);
     try {
       const token = user?.token;
@@ -59,7 +58,7 @@ function useApplyJob() {
         },
       });
       toast.success('File uploaded successfully');
-      handleUploadSuccess(response.data.data); // Adjusted to match the backend response
+      handleUploadSuccess(response.data.data);
     } catch (error) {
       console.error('Error uploading file:', error);
       toast.error('Failed to upload file.');
