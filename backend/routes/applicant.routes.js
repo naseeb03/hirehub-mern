@@ -10,7 +10,7 @@ router.post(
   '/apply/:jobId',
   protect,
   authorize('applicant'),
-  handleFileUpload,
+  // handleFileUpload,
   applyForJob
 );
 

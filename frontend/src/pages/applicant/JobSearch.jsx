@@ -100,7 +100,6 @@ function JobSearch() {
       toast.error('Failed to save job.');
     }
   };
-  
 
   const handleClearFilters = () => {
     setSearchParams({

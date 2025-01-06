@@ -22,8 +22,8 @@ function useApplyJob() {
         throw new Error('No token found');
       }
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/applicants/apply-job`,
-        { jobId: selectedJobId, resumeId: data.resumeId },
+        `${import.meta.env.VITE_API_URL}/applicants/apply/${selectedJobId}`,
+        { coverLetter: '', resume: data.cloudinaryUrl }, // Update this according to your backend requirements
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,7 +59,7 @@ function useApplyJob() {
         },
       });
       toast.success('File uploaded successfully');
-      handleUploadSuccess(response.data);
+      handleUploadSuccess(response.data.data); // Adjusted to match the backend response
     } catch (error) {
       console.error('Error uploading file:', error);
       toast.error('Failed to upload file.');
