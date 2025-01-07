@@ -1,7 +1,7 @@
 import express from 'express';
 import { protect, authorize } from '../middleware/auth.js';
 import { handleFileUpload } from '../middleware/upload.js';
-import { applyForJob } from '../controllers/application.controller.js';
+import { applyForJob, getUserApplications } from '../controllers/application.controller.js';
 import { saveJob, getSavedJobs, unsaveJob } from '../controllers/savedjobs.controller.js';
 
 const router = express.Router();
@@ -39,6 +39,13 @@ router.post(
   protect,
   authorize('applicant'),
   unsaveJob
+);
+
+router.get(
+  '/user/:userId',
+  protect,
+  authorize('applicant'),
+  getUserApplications
 );
 
 export default router;

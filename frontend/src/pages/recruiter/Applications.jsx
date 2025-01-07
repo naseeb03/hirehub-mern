@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
 
 function AllApplications() {
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('all');
+  const { user } = useAuth();
 
   useEffect(() => {
-    setApplications([
-      {
-        id: 1,
-        name: 'John Doe',
-        position: 'Senior Developer',
-        appliedDate: '2023-11-01',
-        status: 'pending',
-        experience: '5 years',
-        resumeUrl: '#'
-      },
-      {
-        id: 2,
-        name: 'Jane Smith',
-        position: 'UI Designer',
-        appliedDate: '2023-11-02',
-        status: 'shortlisted',
-        experience: '3 years',
-        resumeUrl: '#'
+    const fetchApplications = async () => {
+      try {
+        const token = user?.token;
+        const recruiterId = user?.id;
+
+        if (!token || !recruiterId) return;
+
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/recruiters/recruiter/${recruiterId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setApplications(response.data.data);
+      } catch (error) {
+        console.error('Error fetching applications:', error);
       }
-    ]);
-  }, []);
+    };
+
+    fetchApplications();
+  }, [user]);
 
   const handleStatusChange = (applicationId, newStatus) => {
     setApplications(applications.map(app => {
-      if (app.id === applicationId) {
+      if (app._id === applicationId) {
         return { ...app, status: newStatus };
       }
       return app;
@@ -80,16 +82,16 @@ function AllApplications() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredApplications.map(application => (
-              <tr key={application.id}>
+              <tr key={application._id}>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{application.name}</div>
-                  <div className="text-sm text-gray-500">{application.experience} experience</div>
+                  <div className="text-sm font-medium text-gray-900">{application.applicant.name}</div>
+                  {/* <div className="text-sm text-gray-500">{application.experience} experience</div> */}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {application.position}
+                  {application.job.title}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {application.appliedDate}
+                  {new Date(application.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -103,20 +105,20 @@ function AllApplications() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="space-x-2">
                     <button
-                      onClick={() => handleStatusChange(application.id, 'shortlisted')}
+                      onClick={() => handleStatusChange(application._id, 'shortlisted')}
                       className="text-green-600 hover:text-green-900"
                     >
                       Shortlist
                     </button>
                     <button
-                      onClick={() => handleStatusChange(application.id, 'rejected')}
+                      onClick={() => handleStatusChange(application._id, 'rejected')}
                       className="text-red-600 hover:text-red-900"
                     >
                       Reject
                     </button>
                     <a
-                      href={application.resumeUrl}
-                      className="text-blue-600 hover:text-blue-900"
+                      href={application.resume}
+                      className="text-blue-600 hover:text-blue-900 cursor-pointer"
                       target="_blank"
                       rel="noopener noreferrer"
                     >

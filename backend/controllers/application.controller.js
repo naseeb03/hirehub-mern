@@ -98,3 +98,46 @@ export const getApplications = asyncHandler(async (req, res) => {
     });
   }
 });
+
+export const getUserApplications = asyncHandler(async (req, res) => {
+  try {
+    const applications = await Application.find({ applicant: req.params.userId })
+      .populate('job')
+      .populate('applicant', 'name email')
+      .sort('-createdAt');
+
+    return res.status(200).json({
+      success: true,
+      message: 'User applications retrieved successfully',
+      data: applications,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+export const getRecruiterApplications = asyncHandler(async (req, res) => {
+  try {
+    const jobs = await Job.find({ recruiter: req.params.recruiterId }).select('_id');
+    const jobIds = jobs.map(job => job._id);
+
+    const applications = await Application.find({ job: { $in: jobIds } })
+      .populate('job')
+      .populate('applicant', 'name email')
+      .sort('-createdAt');
+
+    return res.status(200).json({
+      success: true,
+      message: 'Recruiter job applications retrieved successfully',
+      data: applications,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});

@@ -40,6 +40,7 @@ function Login() {
           role: user.role,
           name: user.name,
           token: user.token,
+          id: user._id,
         });
 
         navigate(`/${user.role}/dashboard`);

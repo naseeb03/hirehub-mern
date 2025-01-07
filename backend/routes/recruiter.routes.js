@@ -2,7 +2,8 @@ import express from 'express';
 import { protect, authorize } from '../middleware/auth.js';
 import { 
   getApplications, 
-  updateApplicationStatus 
+  updateApplicationStatus, 
+  getRecruiterApplications 
 } from '../controllers/application.controller.js';
 import { applicationStatusValidator } from '../validators/application.validator.js';
 import { validate } from '../middleware/validate.js';
@@ -23,6 +24,13 @@ router.put(
   applicationStatusValidator,
   validate,
   updateApplicationStatus
+);
+
+router.get(
+  '/recruiter/:recruiterId',
+  protect,
+  authorize('recruiter'),
+  getRecruiterApplications
 );
 
 export default router;

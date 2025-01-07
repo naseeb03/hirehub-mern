@@ -1,14 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
 
 function YourApplications() {
   const [applications, setApplications] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
-    setApplications([
-      { id: 1, company: 'Tech Corp', position: 'Frontend Developer', status: 'Pending' },
-      { id: 2, company: 'Design Co', position: 'UI Designer', status: 'Reviewed' },
-      { id: 3, company: 'Health Inc', position: 'Backend Developer', status: 'Rejected' }
-    ]);
+    const fetchApplications = async () => {
+      try {
+        const token = user?.token;
+        const userId = user?.id;
+        if (!token) return;
+        
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/user/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+      });
+        setApplications(response.data.data);
+      } catch (error) {
+        console.error('Error fetching applications:', error);
+      }
+    };
+
+    fetchApplications();
   }, []);
 
   return (
@@ -17,9 +33,9 @@ function YourApplications() {
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="space-y-4">
           {applications.map(app => (
-            <div key={app.id} className="border-b pb-4">
-              <h4 className="font-medium">{app.position}</h4>
-              <p className="text-gray-600">{app.company}</p>
+            <div key={app._id} className="border-b pb-4">
+              <h4 className="font-medium">{app.job.title}</h4>
+              <p className="text-gray-600">{app.job.company}</p>
               <span className={`inline-block px-2 py-1 rounded text-sm ${
                 app.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
                 app.status === 'Reviewed' ? 'bg-green-100 text-green-800' : 
