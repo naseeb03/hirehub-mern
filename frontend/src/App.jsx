@@ -16,6 +16,9 @@ import SavedJobs from './pages/applicant/SavedJobs';
 import JobAnalytics from './pages/recruiter/JobAnalytics';
 import YourApplications from './pages/applicant/Applications';
 import JobPostings from './pages/recruiter/JobPostings';
+import AboutUs from './pages/AboutUs';
+import Contact from './pages/Contact';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
           <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="about" element={<AboutUs />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="privacy" element={<PrivacyPolicy />} />
           
           <Route element={<ProtectedRoute />}>
             <Route path="applicant">
