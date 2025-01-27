@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import BackButton from '../../components/BackButton';
+import jsPDF from 'jspdf';
 
 function ResumeBuilder() {
   const [resumeData, setResumeData] = useState({
@@ -12,6 +14,8 @@ function ResumeBuilder() {
     experience: [{ company: '', position: '', duration: '', description: '' }],
     skills: ['']
   });
+
+  const [generatedResume, setGeneratedResume] = useState(null);
 
   const handlePersonalInfoChange = (e) => {
     setResumeData({
@@ -30,6 +34,11 @@ function ResumeBuilder() {
     });
   };
 
+  const removeEducation = (index) => {
+    const newEducation = resumeData.education.filter((_, i) => i !== index);
+    setResumeData({ ...resumeData, education: newEducation });
+  };
+
   const addExperience = () => {
     setResumeData({
       ...resumeData,
@@ -37,11 +46,21 @@ function ResumeBuilder() {
     });
   };
 
+  const removeExperience = (index) => {
+    const newExperience = resumeData.experience.filter((_, i) => i !== index);
+    setResumeData({ ...resumeData, experience: newExperience });
+  };
+
   const addSkill = () => {
     setResumeData({
       ...resumeData,
       skills: [...resumeData.skills, '']
     });
+  };
+
+  const removeSkill = (index) => {
+    const newSkills = resumeData.skills.filter((_, i) => i !== index);
+    setResumeData({ ...resumeData, skills: newSkills });
   };
 
   const handleEducationChange = (index, e) => {
@@ -76,11 +95,48 @@ function ResumeBuilder() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Resume Data:', resumeData);
+    console.log('Generated Resume Data:', resumeData);
+    setGeneratedResume(resumeData);
+  };
+
+  const downloadResume = () => {
+    const doc = new jsPDF();
+
+    doc.text('Resume', 20, 20);
+    doc.text(`Name: ${generatedResume.personalInfo.fullName}`, 20, 30);
+    doc.text(`Email: ${generatedResume.personalInfo.email}`, 20, 40);
+    doc.text(`Phone: ${generatedResume.personalInfo.phone}`, 20, 50);
+    doc.text(`Location: ${generatedResume.personalInfo.location}`, 20, 60);
+
+    doc.text('Education:', 20, 70);
+    generatedResume.education.forEach((edu, index) => {
+      doc.text(`School: ${edu.school}`, 20, 80 + index * 10);
+      doc.text(`Degree: ${edu.degree}`, 20, 90 + index * 10);
+      doc.text(`Field: ${edu.field}`, 20, 100 + index * 10);
+      doc.text(`Year: ${edu.year}`, 20, 110 + index * 10);
+    });
+
+    doc.text('Experience:', 20, 120);
+    generatedResume.experience.forEach((exp, index) => {
+      doc.text(`Company: ${exp.company}`, 20, 130 + index * 10);
+      doc.text(`Position: ${exp.position}`, 20, 140 + index * 10);
+      doc.text(`Duration: ${exp.duration}`, 20, 150 + index * 10);
+      doc.text(`Description: ${exp.description}`, 20, 160 + index * 10);
+    });
+
+    if (generatedResume.skills.length > 0 && generatedResume.skills[0] !== '') {
+      doc.text('Skills:', 20, 170);
+      generatedResume.skills.forEach((skill, index) => {
+        doc.text(`Skill: ${skill}`, 20, 180 + index * 10);
+      });
+    }
+
+    doc.save('resume.pdf');
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      <BackButton />
       <h2 className="text-2xl font-bold">Resume Builder</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -183,6 +239,7 @@ function ResumeBuilder() {
                   className="w-full p-2 border rounded-md"
                 />
               </div>
+              <button type="button" onClick={() => removeEducation(index)} className="text-red-600 hover:text-red-700">Remove</button>
             </div>
           ))}
         </div>
@@ -241,6 +298,7 @@ function ResumeBuilder() {
                   className="w-full p-2 border rounded-md h-32"
                 />
               </div>
+              <button type="button" onClick={() => removeExperience(index)} className="text-red-600 hover:text-red-700">Remove</button>
             </div>
           ))}
         </div>
@@ -266,6 +324,7 @@ function ResumeBuilder() {
                   className="w-full p-2 border rounded-md"
                   placeholder="Enter a skill"
                 />
+                <button type="button" onClick={() => removeSkill(index)} className="text-red-600 hover:text-red-700">Remove</button>
               </div>
             ))}
           </div>
@@ -276,7 +335,14 @@ function ResumeBuilder() {
             type="submit"
             className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
           >
-            Generate Resume
+            Save Info
+          </button>
+          <button
+            type="button"
+            onClick={downloadResume}
+            className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700"
+          >
+            Download Resume
           </button>
         </div>
       </form>
