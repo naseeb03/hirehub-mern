@@ -1,9 +1,13 @@
 import React from "react";
+import BackButton from "../components/BackButton";
 
 function Contact() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-3xl font-bold ml-2">Contact</h1>
+      </div>
       <p className="text-gray-700">
         Email: support@hirehub.com
       </p>
