@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
 function SavedJobs() {
   const [savedJobs, setSavedJobs] = useState([]);

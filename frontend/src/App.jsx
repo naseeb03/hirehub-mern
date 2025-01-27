@@ -1,7 +1,5 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -18,11 +16,11 @@ import SavedJobs from './pages/applicant/SavedJobs';
 import JobAnalytics from './pages/recruiter/JobAnalytics';
 import YourApplications from './pages/applicant/Applications';
 import JobPostings from './pages/recruiter/JobPostings';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <>
-      <ToastContainer />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -50,6 +48,8 @@ function App() {
           </Route>
         </Route>
       </Routes>
+
+      <Toaster />
     </>
   );
 }

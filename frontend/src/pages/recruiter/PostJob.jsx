@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
 function PostJob() {
   const [jobData, setJobData] = useState({

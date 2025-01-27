@@ -30,7 +30,6 @@ jspm_packages/
 # Build output directories
 build/
 dist/
-public/
 
 # Next.js build output
 .next/
