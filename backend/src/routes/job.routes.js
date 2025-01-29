@@ -4,7 +4,8 @@ import {
   createJob,
   getJobs,
   getJobById,
-  updateJob
+  updateJob,
+  getJobsByRecruiter
 } from '../controllers/job.controller.js';
 
 const router = express.Router();
@@ -31,6 +32,13 @@ router.put(
   protect, 
   authorize('recruiter'), 
   updateJob
+);
+
+router.get(
+  '/:recruiterId/jobs',
+  protect,
+  authorize('recruiter'),
+  getJobsByRecruiter
 );
 
 export default router;

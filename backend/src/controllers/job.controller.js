@@ -7,12 +7,7 @@ export const createJob = async (req, res) => {
       recruiter: req.user._id,
     });
 
-    return res.status(201).json({
-      success: true,
-      data: {
-        job,
-      },
-    });
+    return res.status(201).json(job);
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -47,12 +42,7 @@ export const getJobById = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        job,
-      },
-    });
+    return res.status(200).json(job);
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -81,12 +71,23 @@ export const updateJob = async (req, res) => {
 
     const updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        job: updatedJob,
-      },
+    return res.status(200).json(updateJob);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
+  }
+};
+
+export const getJobsByRecruiter = async (req, res) => {
+  try {
+    const { recruiterId } = req.params;
+    const jobs = await Job.find({ recruiter: recruiterId })
+      .populate('recruiter', 'name company')
+      .sort('-createdAt');
+
+    return res.status(200).json(jobs);
   } catch (error) {
     return res.status(500).json({
       success: false,

@@ -1,14 +1,24 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 
 function JobPostings() {
   const [jobPostings, setJobPostings] = useState([]);
+  const { user } = useAuth();
+  const token = user?.token;
+  const recruiterId = user?.id;
 
   useEffect(() => {
-    setJobPostings([
-      { id: 1, title: 'Senior Developer', company: 'Tech Corp', location: 'Remote', status: 'Active' },
-      { id: 2, title: 'UI Designer', company: 'Design Co', location: 'New York', status: 'Active' },
-      { id: 3, title: 'Backend Developer', company: 'Health Inc', location: 'San Francisco', status: 'Closed' }
-    ]);
+    const fetchJobs = async() => {
+
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/jobs/${recruiterId}/jobs`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setJobPostings(response.data)
+    }
+    fetchJobs();
   }, []);
 
   return (
@@ -17,7 +27,7 @@ function JobPostings() {
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="space-y-4">
           {jobPostings.map(job => (
-            <div key={job.id} className="border-b pb-4">
+            <div key={job._id} className="border-b pb-4">
               <h4 className="font-medium">{job.title}</h4>
               <p className="text-gray-600">{job.company}</p>
               <p className="text-gray-500 text-sm">{job.location}</p>
