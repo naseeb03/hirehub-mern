@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
-import Home from './pages/Home';
+import RedirectRoute from './components/RedirectRoute';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ApplicantDashboard from './pages/applicant/Dashboard';
@@ -26,17 +26,17 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<RedirectRoute />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="about" element={<AboutUs />} />
           <Route path="contact" element={<Contact />} />
           <Route path="privacy" element={<PrivacyPolicy />} />
+          <Route path="jobs" element={<JobSearch />} />
           
           <Route element={<ProtectedRoute />}>
             <Route path="applicant">
               <Route path="dashboard" element={<ApplicantDashboard />} />
-              <Route path="jobs" element={<JobSearch />} />
               <Route path="resume-builder" element={<ResumeBuilder />} />
               <Route path="saved-jobs" element={<SavedJobs />} />
               <Route path="applications" element={<YourApplications />} />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import BackButton from '../../components/BackButton';
+import { Link } from 'react-router-dom';
 
 function AllApplications() {
   const [applications, setApplications] = useState([]);
@@ -120,14 +121,14 @@ function AllApplications() {
                     >
                       Reject
                     </button>
-                    <a
-                      href={application.resume}
+                    <Link
+                      to={application.resume}
                       className="text-blue-600 hover:text-blue-900 cursor-pointer"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       View Resume
-                    </a>
+                    </Link>
                   </div>
                 </td>
               </tr>

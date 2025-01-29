@@ -53,7 +53,7 @@ function ApplicantDashboard() {
               </div>
             ))}
           </div>
-          <Link to="/applicant/jobs" className="text-blue-600 hover:underline block mt-4">
+          <Link to="/jobs" className="text-blue-600 hover:underline block mt-4">
             Browse all jobs
           </Link>
         </div>
@@ -63,7 +63,7 @@ function ApplicantDashboard() {
         <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link
-            to="/applicant/jobs"
+            to="/jobs"
             className="p-4 text-center bg-blue-50 rounded-lg hover:bg-blue-100"
           >
             Search Jobs

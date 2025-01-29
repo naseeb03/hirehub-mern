@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
@@ -115,9 +115,9 @@ function Login() {
 
       <p className="mt-4 text-center text-gray-600">
         Don't have an account?{' '}
-        <a href="/register" className="text-blue-600 hover:underline">
+        <Link to="/register" className="text-blue-600 hover:underline">
           Register here
-        </a>
+        </Link>
       </p>
     </div>
   );

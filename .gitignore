@@ -97,5 +97,3 @@ dump/
 
 # Static environment files
 *.local
-
-lib/

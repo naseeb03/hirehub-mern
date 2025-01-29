@@ -53,7 +53,7 @@ function JobSearch() {
 
     fetchJobs();
     fetchSavedJobs();
-  }, []);
+  }, [user]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -109,6 +109,14 @@ function JobSearch() {
       jobType: 'all'
     });
     setFilteredJobs(jobs);
+  };
+
+  const handleApplyJob = (jobId) => {
+    if (!user) {
+      toast.error('You must be logged in to apply for a job.');
+      return;
+    }
+    applyJob(jobId);
   };
 
   return (
@@ -186,7 +194,7 @@ function JobSearch() {
                 </div>
                 <div className="space-x-2">
                   <button
-                    onClick={() => applyJob(job._id)}
+                    onClick={() => handleApplyJob(job._id)}
                     className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
                   >
                     Apply Now

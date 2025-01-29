@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -11,12 +12,12 @@ function Home() {
           Connect with top employers and opportunities worldwide
         </p>
         <div className="flex justify-center gap-4">
-          <a href="/register" className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+          <Link to="/register" className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
             Get Started
-          </a>
-          <a href="/jobs" className="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600">
+          </Link>
+          <Link to="/jobs" className="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600">
             Browse Jobs
-          </a>
+          </Link>
         </div>
       </section>
 
