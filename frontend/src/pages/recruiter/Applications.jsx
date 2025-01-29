@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
+import BackButton from '../../components/BackButton';
 
 function AllApplications() {
   const [applications, setApplications] = useState([]);
@@ -46,7 +47,10 @@ function AllApplications() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Job Applications</h2>
+        <div className="flex mb-4">
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-2">Job Applications</h1>
+        </div>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}

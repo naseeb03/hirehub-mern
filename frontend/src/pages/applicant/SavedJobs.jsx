@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
+import BackButton from '../../components/BackButton';
 
 function SavedJobs() {
   const [savedJobs, setSavedJobs] = useState([]);
@@ -66,7 +67,10 @@ function SavedJobs() {
         onClose={() => setShowModal(false)}
         onUpload={handleUpload}
       />
-      <h2 className="text-2xl font-bold">Saved Jobs</h2>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-2">Saved Jobs</h1>
+      </div>
 
       <div className="space-y-4">
         {loading && <p>Loading saved jobs...</p>}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
+import BackButton from '../../components/BackButton';
 
 function YourApplications() {
   const [applications, setApplications] = useState([]);
@@ -29,7 +30,10 @@ function YourApplications() {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Your Applications</h2>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-2">Your Applications</h1>
+      </div>
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="space-y-4">
           {applications.map(app => (

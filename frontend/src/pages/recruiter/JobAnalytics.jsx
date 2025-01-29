@@ -1,4 +1,5 @@
 import React from 'react';
+import BackButton from '../../components/BackButton';
 
 function JobAnalytics() {
   const analyticsData = [
@@ -8,7 +9,10 @@ function JobAnalytics() {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Job Analytics</h2>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-2">Job Analytics</h1>
+      </div>
       {analyticsData.length === 0 && <p>No analytics data found.</p>}
       {analyticsData.map((data) => (
         <div key={data.jobId} className="bg-white p-6 rounded-lg shadow">

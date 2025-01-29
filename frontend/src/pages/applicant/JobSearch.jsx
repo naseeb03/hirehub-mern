@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
+import BackButton from '../../components/BackButton';
 
 function JobSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -117,7 +118,10 @@ function JobSearch() {
         onClose={() => setShowModal(false)}
         onUpload={handleUpload}
       />
-      <h2 className="text-2xl font-bold">Search Jobs</h2>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-2">Search Jobs</h1>
+      </div>
       <form onSubmit={handleSearch} className="bg-white p-6 rounded-lg shadow">
         <div className="grid md:grid-cols-3 gap-4">
           <div>

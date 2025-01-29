@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
+import BackButton from '../../components/BackButton';
 
 function PostJob() {
   const [jobData, setJobData] = useState({
@@ -65,7 +66,10 @@ function PostJob() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Post a New Job</h2>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-2">Post a New Job</h1>
+      </div>
 
       {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
 

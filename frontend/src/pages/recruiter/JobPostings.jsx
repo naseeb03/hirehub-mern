@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import BackButton from '../../components/BackButton';
 
 function JobPostings() {
   const [jobPostings, setJobPostings] = useState([]);
@@ -23,7 +24,10 @@ function JobPostings() {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Job Postings</h2>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-2">Job Postings</h1>
+      </div>
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="space-y-4">
           {jobPostings.map(job => (

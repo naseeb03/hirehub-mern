@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import BackButton from '../components/BackButton';
 
 function Profile() {
   const { user } = useAuth();
@@ -74,7 +75,10 @@ function Profile() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
+      <div className="flex mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-2">Profile Settings</h1>
+      </div>
       {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
         <span className="block sm:inline">{error}</span>
       </div>}
