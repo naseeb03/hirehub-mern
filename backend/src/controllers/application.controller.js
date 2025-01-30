@@ -25,10 +25,15 @@ export const applyForJob = async (req, res) => {
       });
     }
 
+    let resumeUrl = null;
+    if (req.file && req.file.cloudinaryUrl) {
+      resumeUrl = req.file.cloudinaryUrl;
+    }
+
     const application = await Application.create({
       job: req.params.jobId,
       applicant: req.user._id,
-      resume: req.body.resume,
+      resume: resumeUrl,
       coverLetter: req.body.coverLetter,
     });
 

@@ -10,6 +10,7 @@ router.post(
   '/apply/:jobId',
   protect,
   authorize('applicant'),
+  handleFileUpload,
   applyForJob
 );
 
@@ -25,13 +26,6 @@ router.get(
   protect,
   authorize('applicant'),
   getSavedJobs
-);
-
-router.post(
-  '/upload-resume',
-  protect,
-  authorize('applicant'),
-  handleFileUpload
 );
 
 router.post(

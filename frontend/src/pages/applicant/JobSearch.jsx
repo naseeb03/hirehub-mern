@@ -17,8 +17,9 @@ function JobSearch() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedJobId, setSelectedJobId] = useState(null); // Add state for selectedJobId
   const user = useSelector((state) => state.auth.user);
-  const { applyJob, showModal, setShowModal, handleUpload } = useApplyJob();
+  const { applyJob, showModal, setShowModal } = useApplyJob();
   const [savedJobs, setSavedJobs] = useState([]);
 
   useEffect(() => {
@@ -102,7 +103,8 @@ function JobSearch() {
       toast.error('You must be logged in to apply for a job.');
       return;
     }
-    applyJob(jobId);
+    setSelectedJobId(jobId);
+    setShowModal(true);
   };
 
   return (
@@ -110,7 +112,7 @@ function JobSearch() {
       <ResumeModal
         show={showModal}
         onClose={() => setShowModal(false)}
-        onUpload={handleUpload}
+        jobId={selectedJobId}
       />
       <div className="flex mb-4">
         <BackButton />

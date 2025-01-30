@@ -199,3 +199,18 @@ export const putJob = async (user, jobData) => {
     throw new Error(err.response.data.message);
   }
 };
+
+export const applyToJob = async (user, formData, jobId) => {
+  try {
+    const res = await axiosInstance.post(`/applicants/apply/${jobId}`,
+      formData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};

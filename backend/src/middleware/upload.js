@@ -10,14 +10,13 @@ export const handleFileUpload = async (req, res, next) => {
     }
 
     const file = req.files.file;
-
     const result = await uploadToCloudinary(file.tempFilePath);
 
-    return res.status(200).json({
-      success: true,
-      message: 'File uploaded successfully',
-      data: { cloudinaryUrl: result.secure_url },
-    });
+    req.file = {
+      cloudinaryUrl: result.secure_url,
+    };
+
+    next();
   } catch (error) {
     next(error);
   }
