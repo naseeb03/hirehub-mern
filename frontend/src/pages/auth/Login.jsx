@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/slices/authSlice';
-import axios from 'axios';
+import { loginUser } from '../../lib/api';
 import { toast } from 'react-hot-toast';
 
 function Login() {
@@ -27,40 +27,22 @@ function Login() {
 
     if (formData.email && formData.password) {
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/auth/login`,
-          {
-            email: formData.email,
-            password: formData.password,
-          }
-        );
-
-        const user = response.data;
+        const userData = await loginUser(formData);
 
         dispatch(
           login({
-            email: user.email,
-            role: user.role,
-            name: user.name,
-            token: user.token,
-            id: user._id,
+            email: userData.email,
+            role: userData.role,
+            name: userData.name,
+            token: userData.token,
+            id: userData._id,
           })
         );
 
-        navigate(`/${user.role}/dashboard`);
+        navigate(`/${userData.role}/dashboard`);
         toast.success('Logged in successfully!');
       } catch (err) {
-        if (err.response) {
-          if (err.response.status === 401) {
-            setError('Incorrect password. Please try again.');
-          } else if (err.response.status === 404) {
-            setError('User does not exist. Please register.');
-          } else {
-            setError('An unexpected error occurred. Please try again.');
-          }
-        } else {
-          setError('Unable to connect to the server. Please try again later.');
-        }
+        setError(err.message);
       }
     } else {
       setError('Please fill in all fields.');
