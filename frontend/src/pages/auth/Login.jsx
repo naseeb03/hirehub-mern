@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../redux/slices/authSlice';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
@@ -11,7 +12,8 @@ function Login() {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if (user) {
@@ -35,13 +37,15 @@ function Login() {
 
         const user = response.data;
 
-        login({
-          email: user.email,
-          role: user.role,
-          name: user.name,
-          token: user.token,
-          id: user._id,
-        });
+        dispatch(
+          login({
+            email: user.email,
+            role: user.role,
+            name: user.name,
+            token: user.token,
+            id: user._id,
+          })
+        );
 
         navigate(`/${user.role}/dashboard`);
         toast.success('Logged in successfully!');

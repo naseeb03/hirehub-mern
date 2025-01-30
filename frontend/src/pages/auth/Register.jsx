@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../redux/slices/authSlice';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
@@ -14,7 +15,8 @@ function Register() {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if (user) {
@@ -22,14 +24,25 @@ function Register() {
     }
   }, [user, navigate]);
 
+  const validateForm = () => {
+    if (formData.password !== formData.confirmPassword) {
+      return 'Passwords do not match';
+    }
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      return 'All fields are required';
+    }
+    return '';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
+
+    setError('');
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
@@ -39,11 +52,16 @@ function Register() {
         role: formData.role,
       });
 
-      login({
-        email: formData.email,
-        role: formData.role,
-        name: formData.name,
-      });
+      const user = response.data;
+
+      dispatch(
+        login({
+            email: user.email,
+            role: user.role,
+            name: user.name,
+            token: user.token,
+        })
+      );
 
       navigate(`/${formData.role}/dashboard`);
       toast.success(response.data.message || 'Registered successfully!');
@@ -62,7 +80,7 @@ function Register() {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Register for HireHub</h2>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}

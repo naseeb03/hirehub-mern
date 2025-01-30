@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import BackButton from '../../components/BackButton';
 import { Link } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 function AllApplications() {
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('all');
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const fetchApplications = async () => {

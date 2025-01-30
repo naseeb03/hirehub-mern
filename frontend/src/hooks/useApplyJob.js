@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 
 function useApplyJob() {
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const [showModal, setShowModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
 

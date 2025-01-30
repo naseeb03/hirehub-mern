@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import BackButton from '../../components/BackButton';
 
 function YourApplications() {
   const [applications, setApplications] = useState([]);
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const fetchApplications = async () => {

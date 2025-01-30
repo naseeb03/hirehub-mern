@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
@@ -17,7 +17,7 @@ function JobSearch() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const { applyJob, showModal, setShowModal, handleUpload } = useApplyJob();
   const [savedJobs, setSavedJobs] = useState([]);
 

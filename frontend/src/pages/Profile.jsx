@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import BackButton from '../components/BackButton';
 
 function Profile() {
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const [formData, setFormData] = useState({
     name: '',
     email: '',

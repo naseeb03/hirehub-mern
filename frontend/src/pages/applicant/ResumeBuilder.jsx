@@ -3,10 +3,10 @@ import BackButton from '../../components/BackButton';
 import jsPDF from 'jspdf';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { useAuth } from '../../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 
 function ResumeBuilder() {
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const [resumeData, setResumeData] = useState({
     personalInfo: {
       fullName: '',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
 
@@ -18,7 +18,7 @@ function PostJob() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
 
   const handleChange = (e) => {
     setJobData({

@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useSelector, useDispatch } from 'react-redux';
 import { BsFillBriefcaseFill } from "react-icons/bs";
 import { toast } from 'react-hot-toast';
+import { logout } from '../redux/slices/authSlice';
 
 function Navbar() {
-  const { user, logout } = useAuth();
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     navigate('/login');
     toast.success('Logged out successfully!');
   };

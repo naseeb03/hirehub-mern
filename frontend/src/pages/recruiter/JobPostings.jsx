@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
 
 function JobPostings() {
   const [jobPostings, setJobPostings] = useState([]);
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const token = user?.token;
   const recruiterId = user?.id;
 
