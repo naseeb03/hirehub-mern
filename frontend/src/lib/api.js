@@ -8,22 +8,194 @@ export const loginUser = async (data) => {
     });
     return res.data;
   } catch (err) {
-    let errorMessage = "An unexpected error occurred. Please try again.";
+    throw new Error(err.response.data.message);
+  }
+};
 
-    if (err.response) {
-      const status = err.response.status;
+export const registerUser = async (data) => {
+  try {
+    const res = await axiosInstance.post('/auth/register', {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
 
-      if (status === 401) {
-        errorMessage = "Incorrect password. Please try again.";
-      } else if (status === 404) {
-        errorMessage = "User does not exist. Please register.";
-      } else {
-        errorMessage = "An unexpected error occurred. Please try again.";
+export const getJobs = async () => {
+  try {
+    const res = await axiosInstance.get('/jobs/');
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const getSavedJobs = async (user) => {
+  try {
+    const res = await axiosInstance.get('/applicants/saved-jobs', {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const saveJob = async (user, jobId) => {
+  try {
+    const res = await axiosInstance.post('/applicants/save-job',
+      { jobId },
+      {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const getUserApplications = async (user) => {
+  try {
+    const res = await axiosInstance.get(`/applicants/user/${user.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       }
-    } else {
-      errorMessage = "Unable to connect to the server. Please try again later.";
-    }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
 
-    throw new Error(errorMessage);
+export const getResume = async (user) => {
+  try {
+    const res = await axiosInstance.get('/resume', 
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const saveResume = async (user, resumeData) => {
+  try {
+    const res = await axiosInstance.post('/resume',
+      resumeData,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const unsaveJob = async (user, jobId) => {
+  try {
+    const res = await axiosInstance.post('/applicants/unsave-job',
+      { jobId },
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const getRecruiterApplications = async (user) => {
+  try {
+    const res = await axiosInstance.get(`/recruiters/recruiter/${user.id}`, 
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const getUserJobs = async (user) => {
+  try {
+    const res = await axiosInstance.get(`/jobs/${user.id}/jobs`, 
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const getProfile = async (user) => {
+  try {
+    const res = await axiosInstance.get('/profile', 
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const updateProfile = async (user, formData) => {
+  try {
+    const res = await axiosInstance.put('/profile',
+      formData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        }
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const putJob = async (user, jobData) => {
+  try {
+    const res = await axiosInstance.post('/jobs/', 
+      jobData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
   }
 };

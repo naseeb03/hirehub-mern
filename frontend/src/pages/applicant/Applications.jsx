@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import BackButton from '../../components/BackButton';
+import { getUserApplications } from '../../lib/api';
 
 function YourApplications() {
   const [applications, setApplications] = useState([]);
@@ -10,16 +10,10 @@ function YourApplications() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const token = user?.token;
-        const userId = user?.id;
-        if (!token) return;
+        if (!user) return;
         
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/user/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-      });
-        setApplications(response.data.data);
+        const response = await getUserApplications(user);
+        setApplications(response);
       } catch (error) {
         console.error('Error fetching applications:', error);
       }

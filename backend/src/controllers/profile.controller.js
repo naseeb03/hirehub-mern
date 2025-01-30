@@ -10,11 +10,7 @@ export const getProfile = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: 'Profile retrieved successfully',
-      data: user,
-    });
+    return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -48,11 +44,7 @@ export const updateProfile = async (req, res) => {
 
     await user.save();
 
-    return res.status(200).json({
-      success: true,
-      message: 'Profile updated successfully',
-      data: user,
-    });
+    return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({
       success: false,

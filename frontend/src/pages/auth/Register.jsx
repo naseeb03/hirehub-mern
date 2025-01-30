@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/slices/authSlice';
-import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { registerUser } from '../../lib/api';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -42,17 +42,8 @@ function Register() {
       return;
     }
 
-    setError('');
-
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-      });
-
-      const user = response.data;
+      const user = await registerUser(formData);
 
       dispatch(
         login({
@@ -64,9 +55,9 @@ function Register() {
       );
 
       navigate(`/${formData.role}/dashboard`);
-      toast.success(response.data.message || 'Registered successfully!');
+      toast.success('Registered successfully!');
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError(err.message);
     }
   };
 

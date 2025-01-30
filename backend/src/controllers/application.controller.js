@@ -106,11 +106,7 @@ export const getUserApplications = asyncHandler(async (req, res) => {
       .populate('applicant', 'name email')
       .sort('-createdAt');
 
-    return res.status(200).json({
-      success: true,
-      message: 'User applications retrieved successfully',
-      data: applications,
-    });
+    return res.status(200).json(applications);
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -129,11 +125,7 @@ export const getRecruiterApplications = asyncHandler(async (req, res) => {
       .populate('applicant', 'name email')
       .sort('-createdAt');
 
-    return res.status(200).json({
-      success: true,
-      message: 'Recruiter job applications retrieved successfully',
-      data: applications,
-    });
+    return res.status(200).json(applications);
   } catch (error) {
     return res.status(500).json({
       success: false,

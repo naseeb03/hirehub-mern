@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import BackButton from '../components/BackButton';
+import { getProfile, updateProfile } from '../lib/api';
 
 function Profile() {
   const user = useSelector((state) => state.auth.user);
@@ -20,14 +20,9 @@ function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = user?.token;
-        if (!token) return;
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/profile`, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        const profileData = response.data.data;
+        if (!user) return;
+        const response = await getProfile(user);
+        const profileData = response;
         setFormData({
           name: profileData.name,
           email: profileData.email,
@@ -48,21 +43,11 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/profile`, formData, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      setError(null)
-      toast.success(response.data.message || 'Profile updated successfully!');
+      const response = await updateProfile(user, formData);
+      toast.success('Profile updated successfully!');
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message);
-        toast.error(error.response.data.message);
-      } else {
-        setError('An unexpected error occurred');
-        toast.error('An unexpected error occurred');
-      }
+      setError(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
 

@@ -25,27 +25,27 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    if (formData.email && formData.password) {
-      try {
-        const userData = await loginUser(formData);
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all fields.')
+    } 
 
-        dispatch(
-          login({
-            email: userData.email,
-            role: userData.role,
-            name: userData.name,
-            token: userData.token,
-            id: userData._id,
-          })
-        );
+    try {
+      const userData = await loginUser(formData);
 
-        navigate(`/${userData.role}/dashboard`);
-        toast.success('Logged in successfully!');
-      } catch (err) {
-        setError(err.message);
-      }
-    } else {
-      setError('Please fill in all fields.');
+      dispatch(
+        login({
+          email: userData.email,
+          role: userData.role,
+          name: userData.name,
+          token: userData.token,
+          id: userData._id,
+        })
+      );
+
+      navigate(`/${userData.role}/dashboard`);
+      toast.success('Logged in successfully!');
+    } catch (err) {
+      setError(err.message);
     }
   };
 

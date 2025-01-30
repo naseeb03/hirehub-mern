@@ -22,7 +22,7 @@ function useApplyJob() {
       }
       await axios.post(
         `${import.meta.env.VITE_API_URL}/applicants/apply/${selectedJobId}`,
-        { coverLetter: '', resume: data.cloudinaryUrl }, // Update this according to your backend requirements
+        { coverLetter: '', resume: data.cloudinaryUrl },
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
+import { putJob } from '../../lib/api';
 
 function PostJob() {
   const [jobData, setJobData] = useState({
@@ -33,19 +33,9 @@ function PostJob() {
     setError(null);
 
     try {
-      const token = user?.token;
-      if (!token) {
-        throw new Error('No token found');
-      }
-
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/jobs/`, jobData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      toast.success(response.data.message || 'Job posted successfully!');
-
+      if (!user) return;
+      const response = await putJob(user, jobData);
+      toast.success('Job posted successfully!');
       setJobData({
         title: '',
         company: '',

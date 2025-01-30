@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import BackButton from '../../components/BackButton';
 import jsPDF from 'jspdf';
 import toast from 'react-hot-toast';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { getResume, saveResume } from '../../lib/api';
 
 function ResumeBuilder() {
   const user = useSelector((state) => state.auth.user);
@@ -21,26 +21,20 @@ function ResumeBuilder() {
 
   const [generatedResume, setGeneratedResume] = useState(null);
 
-  const token = user?.token;
-
   useEffect(() => {
     const fetchResume = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/resume`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setResumeData(response.data);
+        const response = await getResume(user);
+        setResumeData(response);
       } catch (error) {
         console.error('Error fetching resume:', error);
       }
     };
 
-    if (token) {
+    if (user) {
       fetchResume();
     }
-  }, [token]);
+  }, [user]);
 
   const handlePersonalInfoChange = (e) => {
     setResumeData({
@@ -118,15 +112,12 @@ function ResumeBuilder() {
     setResumeData({ ...resumeData, skills: newSkills });
   };
 
-  const saveResume = async () => {
+  const onSaveHandler = async () => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/resume`, resumeData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      if(!resumeData) return;
+      const response = await saveResume(user, resumeData);
       toast.success("Information Saved");
-      console.log('Resume saved:', response.data);
+      console.log('Resume saved:', response);
     } catch (error) {
       console.error('Error saving resume:', error);
     }
@@ -380,7 +371,7 @@ function ResumeBuilder() {
         <div className="flex justify-end space-x-4">
           <button
             type="button"
-            onClick={saveResume}
+            onClick={onSaveHandler}
             className="bg-yellow-600 text-white px-6 py-2 rounded-md hover:bg-yellow-700"
           >
             Save Info

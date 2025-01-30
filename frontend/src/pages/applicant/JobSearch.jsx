@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
+import { getJobs, getSavedJobs, saveJob } from '../../lib/api';
 
 function JobSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -25,9 +25,9 @@ function JobSearch() {
     const fetchJobs = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/jobs/`);
-        setJobs(response.data);
-        setFilteredJobs(response.data);
+        const response = await getJobs();
+        setJobs(response);
+        setFilteredJobs(response);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -37,15 +37,10 @@ function JobSearch() {
 
     const fetchSavedJobs = async () => {
       try {
-        const token = user?.token;
-        if (!token) return;
+        if (!user) return;
   
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/saved-jobs`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setSavedJobs(response.data);
+        const response = await getSavedJobs(user);
+        setSavedJobs(response);
       } catch (error) {
         console.error('Error fetching saved jobs:', error);
       }
@@ -79,22 +74,13 @@ function JobSearch() {
     }
   
     try {
-      const token = user?.token;
-      if (!token) {
-        throw new Error('No token found');
-      }
-  
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/applicants/save-job`,
-        { jobId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
-      toast.success(response.data.message || 'Job saved successfully!');
+      if (!user) {
+        toast.error('You must be logged in to save a job.');
+        return;
+      };
+      const response = await saveJob(user, jobId);
+
+      toast.success(response.message || 'Job saved successfully!');
       setSavedJobs([...currentSavedJobs, { _id: jobId }]);
     } catch (error) {
       console.error('Error saving job:', error);

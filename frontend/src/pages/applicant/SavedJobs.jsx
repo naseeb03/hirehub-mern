@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
+import { getSavedJobs, unsaveJob } from '../../lib/api';
 
 function SavedJobs() {
   const [savedJobs, setSavedJobs] = useState([]);
@@ -16,17 +16,10 @@ function SavedJobs() {
   useEffect(() => {
     const fetchSavedJobs = async () => {
       try {
-        const token = user?.token;
-        if (!token) {
-          throw new Error('No token found');
-        }
+        if (!user) return;
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/saved-jobs`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setSavedJobs(Array.isArray(response.data) ? response.data : []);
+        const response = await getSavedJobs(user);
+        setSavedJobs(Array.isArray(response) ? response : []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -39,20 +32,9 @@ function SavedJobs() {
 
   const handleUnsaveJob = async (jobId) => {
     try {
-      const token = user?.token;
-      if (!token) {
-        throw new Error('No token found');
-      }
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/applicants/unsave-job`,
-        { jobId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success(response.data.message || 'Job unsaved successfully!');
+      if (!user) return;
+      const response = await unsaveJob(user, jobId);
+      toast.success(response.message || 'Job unsaved successfully!');
       setSavedJobs(savedJobs.filter(job => job._id !== jobId));
     } catch (error) {
       console.error('Error unsaving job:', error);

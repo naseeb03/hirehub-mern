@@ -1,23 +1,21 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
+import { getUserJobs } from '../../lib/api';
 
 function JobPostings() {
   const [jobPostings, setJobPostings] = useState([]);
   const user = useSelector((state) => state.auth.user);
-  const token = user?.token;
-  const recruiterId = user?.id;
 
   useEffect(() => {
-    const fetchJobs = async() => {
-
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/jobs/${recruiterId}/jobs`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setJobPostings(response.data)
+    const fetchJobs = async () => {
+      if (!user) return;
+      try {
+        const response = await getUserJobs(user);
+        setJobPostings(response);
+      } catch (error) {
+        console.error("Error fetching Jobs:", error);
+      }
     }
     fetchJobs();
   }, []);
@@ -35,9 +33,8 @@ function JobPostings() {
               <h4 className="font-medium">{job.title}</h4>
               <p className="text-gray-600">{job.company}</p>
               <p className="text-gray-500 text-sm">{job.location}</p>
-              <span className={`inline-block px-2 py-1 rounded text-sm ${
-                job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
+              <span className={`inline-block px-2 py-1 rounded text-sm ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}>
                 {job.status}
               </span>
             </div>

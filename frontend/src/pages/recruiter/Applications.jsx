@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import BackButton from '../../components/BackButton';
 import { Link } from 'react-router-dom';
+import { getRecruiterApplications } from '../../lib/api';
 
 function AllApplications() {
   const [applications, setApplications] = useState([]);
@@ -12,17 +12,9 @@ function AllApplications() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const token = user?.token;
-        const recruiterId = user?.id;
-
-        if (!token || !recruiterId) return;
-
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/recruiters/recruiter/${recruiterId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setApplications(response.data.data);
+        if (!user) return;
+        const response = await getRecruiterApplications(user);
+        setApplications(response);
       } catch (error) {
         console.error('Error fetching applications:', error);
       }
@@ -86,53 +78,60 @@ function AllApplications() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredApplications.map(application => (
-              <tr key={application._id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{application.applicant.name}</div>
-                  {/* <div className="text-sm text-gray-500">{application.experience} experience</div> */}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {application.job.title}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {new Date(application.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                    ${application.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : ''}
-                    ${application.status === 'shortlisted' ? 'bg-green-100 text-green-800' : ''}
-                    ${application.status === 'rejected' ? 'bg-red-100 text-red-800' : ''}
-                  `}>
-                    {application.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="space-x-2">
-                    <button
-                      onClick={() => handleStatusChange(application._id, 'shortlisted')}
-                      className="text-green-600 hover:text-green-900"
-                    >
-                      Shortlist
-                    </button>
-                    <button
-                      onClick={() => handleStatusChange(application._id, 'rejected')}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Reject
-                    </button>
-                    <Link
-                      to={application.resume}
-                      className="text-blue-600 hover:text-blue-900 cursor-pointer"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Resume
-                    </Link>
-                  </div>
+            {filteredApplications.length > 0 ? (
+              filteredApplications.map(application => (
+                <tr key={application._id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{application.applicant.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {application.job.title}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(application.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+            ${application.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : ''}
+            ${application.status === 'shortlisted' ? 'bg-green-100 text-green-800' : ''}
+            ${application.status === 'rejected' ? 'bg-red-100 text-red-800' : ''}
+          `}>
+                      {application.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="space-x-2">
+                      <button
+                        onClick={() => handleStatusChange(application._id, 'shortlisted')}
+                        className="text-green-600 hover:text-green-900"
+                      >
+                        Shortlist
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(application._id, 'rejected')}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Reject
+                      </button>
+                      <Link
+                        to={application.resume}
+                        className="text-blue-600 hover:text-blue-900 cursor-pointer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View Resume
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  No applications found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
