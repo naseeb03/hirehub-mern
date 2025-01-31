@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
 import { getUserApplications } from '../../lib/api';
-import ApplicationSkeleton from '../../skeletons/ApplicationSkeleton';
 
 function YourApplications() {
   const [applications, setApplications] = useState([]);
@@ -34,7 +33,9 @@ function YourApplications() {
       </div>
       <div className="bg-white p-6 rounded-lg shadow">
         {loading ? (
-          <ApplicationSkeleton />
+          <div className="flex items-center justify-center">
+            <div className='loader'></div>
+          </div>
         ) : (
           <div className="space-y-4">
             {applications.map((app) => (
@@ -42,13 +43,12 @@ function YourApplications() {
                 <h4 className="font-medium">{app.job.title}</h4>
                 <p className="text-gray-600">{app.job.company}</p>
                 <span
-                  className={`inline-block px-2 py-1 rounded text-sm ${
-                    app.status === 'Pending'
+                  className={`inline-block px-2 py-1 rounded text-sm ${app.status === 'Pending'
                       ? 'bg-yellow-100 text-yellow-800'
                       : app.status === 'Reviewed'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                 >
                   {app.status}
                 </span>

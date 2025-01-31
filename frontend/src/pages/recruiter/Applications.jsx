@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
 import { Link } from 'react-router-dom';
 import { getRecruiterApplications } from '../../lib/api';
-import RecApplicationSkeleton from '../../skeletons/RecApplicationSkeleton';
 
 function AllApplications() {
   const [applications, setApplications] = useState([]);
@@ -62,7 +61,9 @@ function AllApplications() {
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {loading ? (
-          <RecApplicationSkeleton />
+          <div className="flex items-center justify-center">
+            <div className='loader'></div>
+          </div>
         ) : (
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

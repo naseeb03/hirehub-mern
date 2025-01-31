@@ -5,7 +5,6 @@ import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
 import { getSavedJobs, unsaveJob } from '../../lib/api';
-import JobSkeleton from '../../skeletons/JobSkeleton';
 
 function SavedJobs() {
   const [savedJobs, setSavedJobs] = useState([]);
@@ -56,7 +55,9 @@ function SavedJobs() {
       </div>
 
       <div className="space-y-4">
-        {loading && <JobSkeleton />}
+        {loading && <div className="flex items-center justify-center">
+          <div className='loader'></div>
+        </div>}
         {error && <p className="text-red-600">{error}</p>}
         {!loading && !error && savedJobs.length === 0 && <p>No saved jobs found.</p>}
         {!loading &&

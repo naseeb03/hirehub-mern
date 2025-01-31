@@ -5,7 +5,6 @@ import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
 import { getJobs, getSavedJobs, saveJob } from '../../lib/api';
-import JobSkeleton from '../../skeletons/JobSkeleton';
 
 function JobSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -164,7 +163,11 @@ function JobSearch() {
         Clear Filters
       </button>
       <div className="space-y-4">
-        {loading ? <JobSkeleton /> : (
+        {loading ? (
+          <div className="flex items-center justify-center">
+          <div className='loader'></div>
+        </div>
+        ) : (
           <>
             {error && <p className="text-red-600">{error}</p>}
             {!loading && !error && filteredJobs.length === 0 && <p>No jobs found.</p>}

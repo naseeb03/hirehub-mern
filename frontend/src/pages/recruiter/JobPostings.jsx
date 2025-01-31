@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
 import { getUserJobs } from '../../lib/api';
-import JobSkeleton from '../../skeletons/JobSkeleton';
 
 function JobPostings() {
   const [jobPostings, setJobPostings] = useState([]);
@@ -33,7 +32,9 @@ function JobPostings() {
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="space-y-4">
           {loading ? (
-            <JobSkeleton />
+            <div className="flex items-center justify-center">
+              <div className='loader'></div>
+            </div>
           ) : (
             jobPostings.map(job => (
               <div key={job._id} className="border-b pb-4">
