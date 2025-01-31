@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
 import { getUserJobs } from '../../lib/api';
+import JobSkeleton from '../../skeletons/JobSkeleton';
 
 function JobPostings() {
   const [jobPostings, setJobPostings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -15,10 +17,12 @@ function JobPostings() {
         setJobPostings(response);
       } catch (error) {
         console.error("Error fetching Jobs:", error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
     fetchJobs();
-  }, []);
+  }, [user]);
 
   return (
     <div className="space-y-8">
@@ -28,17 +32,20 @@ function JobPostings() {
       </div>
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="space-y-4">
-          {jobPostings.map(job => (
-            <div key={job._id} className="border-b pb-4">
-              <h4 className="font-medium">{job.title}</h4>
-              <p className="text-gray-600">{job.company}</p>
-              <p className="text-gray-500 text-sm">{job.location}</p>
-              <span className={`inline-block px-2 py-1 rounded text-sm ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                {job.status}
-              </span>
-            </div>
-          ))}
+          {loading ? (
+            <JobSkeleton />
+          ) : (
+            jobPostings.map(job => (
+              <div key={job._id} className="border-b pb-4">
+                <h4 className="font-medium">{job.title}</h4>
+                <p className="text-gray-600">{job.company}</p>
+                <p className="text-gray-500 text-sm">{job.location}</p>
+                <span className={`inline-block px-2 py-1 rounded text-sm ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {job.status}
+                </span>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

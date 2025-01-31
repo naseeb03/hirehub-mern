@@ -5,6 +5,7 @@ import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
 import { getJobs, getSavedJobs, saveJob } from '../../lib/api';
+import JobSkeleton from '../../skeletons/JobSkeleton';
 
 function JobSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -39,7 +40,7 @@ function JobSearch() {
     const fetchSavedJobs = async () => {
       try {
         if (!user) return;
-  
+
         const response = await getSavedJobs(user);
         setSavedJobs(response);
       } catch (error) {
@@ -68,12 +69,12 @@ function JobSearch() {
 
   const handleSaveJob = async (jobId) => {
     const currentSavedJobs = Array.isArray(savedJobs) ? savedJobs : [];
-  
+
     if (currentSavedJobs.some(job => job._id === jobId)) {
       toast.error('Job already saved');
       return;
     }
-  
+
     try {
       if (!user) {
         toast.error('You must be logged in to save a job.');
@@ -163,41 +164,44 @@ function JobSearch() {
         Clear Filters
       </button>
       <div className="space-y-4">
-        {loading && <p>Loading jobs...</p>}
-        {error && <p className="text-red-600">{error}</p>}
-        {!loading && !error && filteredJobs.length === 0 && <p>No jobs found.</p>}
-        {!loading &&
-          !error &&
-          filteredJobs.map((job) => (
-            <div key={job._id} className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-xl font-semibold">{job.title}</h3>
-                  <p className="text-gray-600">{job.company}</p>
-                  <div className="mt-2 space-x-2">
-                    <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.location}</span>
-                    <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.type}</span>
-                    <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.salary}</span>
+        {loading ? <JobSkeleton /> : (
+          <>
+            {error && <p className="text-red-600">{error}</p>}
+            {!loading && !error && filteredJobs.length === 0 && <p>No jobs found.</p>}
+            {!loading &&
+              !error &&
+              filteredJobs.map((job) => (
+                <div key={job._id} className="bg-white p-6 rounded-lg shadow">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-xl font-semibold">{job.title}</h3>
+                      <p className="text-gray-600">{job.company}</p>
+                      <div className="mt-2 space-x-2">
+                        <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.location}</span>
+                        <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.type}</span>
+                        <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.salary}</span>
+                      </div>
+                    </div>
+                    <div className="space-x-2">
+                      <button
+                        onClick={() => handleApplyJob(job._id)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                      >
+                        Apply Now
+                      </button>
+                      <button
+                        onClick={() => handleSaveJob(job._id)}
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+                      >
+                        Save Job
+                      </button>
+                    </div>
                   </div>
+                  <p className="mt-4 text-gray-700">{job.description}</p>
                 </div>
-                <div className="space-x-2">
-                  <button
-                    onClick={() => handleApplyJob(job._id)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-                  >
-                    Apply Now
-                  </button>
-                  <button
-                    onClick={() => handleSaveJob(job._id)}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
-                  >
-                    Save Job
-                  </button>
-                </div>
-              </div>
-              <p className="mt-4 text-gray-700">{job.description}</p>
-            </div>
-          ))}
+              ))}
+          </>
+        )}
       </div>
     </div>
   );
