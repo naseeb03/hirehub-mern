@@ -17,7 +17,7 @@ function JobSearch() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedJobId, setSelectedJobId] = useState(null); // Add state for selectedJobId
+  const [selectedJobId, setSelectedJobId] = useState(null);
   const user = useSelector((state) => state.auth.user);
   const { applyJob, showModal, setShowModal } = useApplyJob();
   const [savedJobs, setSavedJobs] = useState([]);
