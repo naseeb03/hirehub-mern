@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FiBriefcase, FiFileText, FiUser, FiBookmark } from 'react-icons/fi';
 
 function ApplicantDashboard() {
   const [applications, setApplications] = useState([]);
@@ -64,27 +65,31 @@ function ApplicantDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link
             to="/jobs"
-            className="p-4 text-center bg-blue-50 rounded-lg hover:bg-blue-100"
+            className="p-4 flex flex-col items-center justify-center bg-blue-100 rounded-xl hover:bg-blue-200 transition shadow-sm"
           >
-            Search Jobs
+            <FiBriefcase size={24} className="text-blue-600 mb-2" />
+            <span className="text-sm font-medium">Search Jobs</span>
           </Link>
           <Link
             to="/applicant/resume-builder"
-            className="p-4 text-center bg-green-50 rounded-lg hover:bg-green-100"
+            className="p-4 flex flex-col items-center justify-center bg-green-100 rounded-xl hover:bg-green-200 transition shadow-sm"
           >
-            Resume Builder
+            <FiFileText size={24} className="text-green-600 mb-2" />
+            <span className="text-sm font-medium">Resume Builder</span>
           </Link>
           <Link
             to="/profile"
-            className="p-4 text-center bg-purple-50 rounded-lg hover:bg-purple-100"
+            className="p-4 flex flex-col items-center justify-center bg-purple-100 rounded-xl hover:bg-purple-200 transition shadow-sm"
           >
-            Update Profile
+            <FiUser size={24} className="text-purple-600 mb-2" />
+            <span className="text-sm font-medium">Update Profile</span>
           </Link>
           <Link
             to="/applicant/saved-jobs"
-            className="p-4 text-center bg-yellow-50 rounded-lg hover:bg-yellow-100"
+            className="p-4 flex flex-col items-center justify-center bg-yellow-100 rounded-xl hover:bg-yellow-200 transition shadow-sm"
           >
-            Saved Jobs
+            <FiBookmark size={24} className="text-yellow-600 mb-2" />
+            <span className="text-sm font-medium">Saved Jobs</span>
           </Link>
         </div>
       </div>
