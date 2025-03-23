@@ -30,7 +30,7 @@ function RecruiterDashboard() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md hover:scale-105 transform hover:shadow-lg transition-all duration-500">
+        <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">Active Job Postings</h3>
           <div className="space-y-4">
             {jobPostings.map(job => (
@@ -48,7 +48,7 @@ function RecruiterDashboard() {
           </Link>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md hover:scale-105 transform hover:shadow-lg transition-all duration-500">
+        <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">Recent Applications</h3>
           <div className="space-y-4">
             {applications.map(app => (
@@ -67,7 +67,7 @@ function RecruiterDashboard() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md mt-6 hover:scale-105 transform hover:shadow-lg transition-all duration-500">
+      <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         <h3 className="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <Link
