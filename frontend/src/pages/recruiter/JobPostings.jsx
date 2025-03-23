@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { FiEdit } from 'react-icons/fi';
 import BackButton from '../../components/BackButton';
 import { getUserJobs } from '../../lib/api';
 
@@ -24,29 +26,37 @@ function JobPostings() {
   }, [user]);
 
   return (
-    <div className="space-y-8">
-      <div className="flex mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-2">Job Postings</h1>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="space-y-4">
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <div className='loader'></div>
-            </div>
-          ) : (
-            jobPostings.map(job => (
-              <div key={job._id} className="border-b pb-4">
-                <h4 className="font-medium">{job.title}</h4>
-                <p className="text-gray-600">{job.company}</p>
-                <p className="text-gray-500 text-sm">{job.location}</p>
-                <span className={`inline-block px-2 py-1 rounded text-sm ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                  {job.status}
-                </span>
+    <div className='flex items-center justify-center'>
+      <div className="space-y-8 w-8/12">
+        <div className="flex mb-4">
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-2">Job Postings</h1>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="space-y-4">
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className='loader'></div>
               </div>
-            ))
-          )}
+            ) : (
+              jobPostings.map(job => (
+                <div key={job._id} className="border-b pb-4 flex justify-between items-center">
+                  <div>
+                    <h4 className="font-medium"><strong>Title:</strong> {job.title}</h4>
+                    <p className="text-gray-600"><strong>Company:</strong> {job.company}</p>
+                    <p className="text-gray-500 text-sm"><strong>Location:</strong> {job.location}</p>
+                    <span className={`inline-block px-2 py-1 rounded text-sm mt-2 ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      Status: {job.status}
+                    </span>
+                  </div>
+                  
+                  <Link to="/profile" className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+                    <FiEdit className="mr-2" /> Edit Job
+                  </Link>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
