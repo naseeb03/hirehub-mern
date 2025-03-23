@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
 import BackButton from '../../components/BackButton';
 import { getUserJobs } from '../../lib/api';
@@ -26,7 +25,7 @@ function JobPostings() {
       }
     };
     fetchJobs();
-  }, [user]);
+  }, [user, isModalOpen]);
 
   const openModal = (jobId) => {
     setSelectedJobId(jobId);

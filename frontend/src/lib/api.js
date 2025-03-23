@@ -230,11 +230,7 @@ export const updateJob = async (user, jobId, jobData) => {
 
 export const getJobById = async (jobId, user) => {
   try {
-    const res = await axiosInstance.get(`/jobs/${jobId}`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    const res = await axiosInstance.get(`/jobs/${jobId}`);
     return res.data;
   } catch (err) {
     throw new Error(err.response.data.message);

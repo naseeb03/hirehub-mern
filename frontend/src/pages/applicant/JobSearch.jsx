@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import ResumeModal from '../../components/ResumeModal';
-import useApplyJob from '../../hooks/useApplyJob';
+// import ResumeModal from '../../components/ResumeModal';
+// import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
 import { getJobs, getSavedJobs, saveJob, unsaveJob } from '../../lib/api';
@@ -18,7 +18,7 @@ function JobSearch() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const user = useSelector((state) => state.auth.user);
-  const { applyJob, showModal, setShowModal } = useApplyJob();
+  // const { applyJob, showModal, setShowModal } = useApplyJob();
   const [savedJobs, setSavedJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState();
   const navigate = useNavigate();
@@ -116,14 +116,14 @@ function JobSearch() {
     setFilteredJobs(jobs);
   };
 
-  const handleApplyJob = (jobId) => {
-    if (!user) {
-      toast.error('You must be logged in to apply for a job.');
-      return;
-    }
-    setSelectedJobId(jobId);
-    setShowModal(true);
-  };
+  // const handleApplyJob = (jobId) => {
+  //   if (!user) {
+  //     toast.error('You must be logged in to apply for a job.');
+  //     return;
+  //   }
+  //   setSelectedJobId(jobId);
+  //   setShowModal(true);
+  // };
 
   const handleViewDetails = (jobId) => {
     navigate(`/jobs/${jobId}`);
@@ -131,11 +131,11 @@ function JobSearch() {
 
   return (
     <div className="space-y-6">
-      <ResumeModal
+      {/* <ResumeModal
         show={showModal}
         onClose={() => setShowModal(false)}
         jobId={selectedJobId}
-      />
+      /> */}
       <div className="flex mb-4">
         <BackButton />
         <h1 className="text-2xl font-bold ml-2">Search Jobs</h1>
@@ -195,42 +195,45 @@ function JobSearch() {
             {!loading && !error && filteredJobs.length === 0 && <p>No jobs found.</p>}
             {!loading &&
               !error &&
-              filteredJobs.map((job) => (
-                <div key={job._id} className="bg-white p-6 rounded-lg shadow">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-semibold">{job.title}</h3>
-                      <p className="text-gray-600">{job.company}</p>
-                      <div className="mt-2 space-x-2">
-                        <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.location}</span>
-                        <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.type}</span>
-                        <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.salary}</span>
+              filteredJobs.map((job) => {
+                const isJobSaved = Array.isArray(savedJobs) && savedJobs.some(savedJob => savedJob._id === job._id);
+                return (
+                  <div key={job._id} className="bg-white p-6 rounded-lg shadow">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="text-xl font-semibold">{job.title}</h3>
+                        <p className="text-gray-600">{job.company}</p>
+                        <div className="mt-2 space-x-2">
+                          <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.location}</span>
+                          <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.type}</span>
+                          <span className="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{job.salary}</span>
+                        </div>
+                      </div>
+                      <div className="space-x-2">
+                        <button
+                          onClick={() => handleViewDetails(job._id)}
+                          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        >
+                          View Details
+                        </button>
+                        {/* <button
+                          onClick={() => handleApplyJob(job._id)}
+                          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                        >
+                          Apply Now
+                        </button> */}
+                        <button
+                          onClick={() => handleToggleSaveJob(job._id)}
+                          className={`px-4 py-2 rounded-md ${isJobSaved ? "bg-red-500 text-white hover:bg-red-600" : 'bg-yellow-500 text-white hover:bg-yellow-600'}`}
+                        >
+                          {isJobSaved ? 'Unsave Job' : 'Save Job'}
+                        </button>
                       </div>
                     </div>
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleViewDetails(job._id)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => handleApplyJob(job._id)}
-                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-                      >
-                        Apply Now
-                      </button>
-                      <button
-                        onClick={() => handleToggleSaveJob(job._id)}
-                        className={`px-4 py-2 rounded-md ${savedJobs.some(savedJob => savedJob._id === job._id) ? 'bg-yellow-600 text-white hover:bg-yellow-700' : 'bg-yellow-500 text-white hover:bg-yellow-600'}`}
-                      >
-                        {savedJobs.some(savedJob => savedJob._id === job._id) ? 'Unsave Job' : 'Save Job'}
-                      </button>
-                    </div>
+                    <p className="mt-4 text-gray-700">{job.description}</p>
                   </div>
-                  <p className="mt-4 text-gray-700">{job.description}</p>
-                </div>
-              ))}
+                );
+              })}
           </>
         )}
       </div>
