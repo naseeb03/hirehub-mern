@@ -20,6 +20,7 @@ import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Toaster } from 'react-hot-toast';
+import JobDetailsPage from './pages/JobDetailsPage';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="privacy" element={<PrivacyPolicy />} />
           <Route path="jobs" element={<JobSearch />} />
+          <Route path="jobs/:jobId" element={<JobDetailsPage />} />
           
           <Route element={<ProtectedRoute />}>
             <Route path="applicant">

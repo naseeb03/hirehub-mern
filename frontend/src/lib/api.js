@@ -214,3 +214,29 @@ export const applyToJob = async (user, formData, jobId) => {
     throw new Error(err.response.data.message);
   }
 };
+
+export const updateJob = async (user, jobId, jobData) => {
+  try {
+    const res = await axiosInstance.put(`/jobs/${jobId}`, jobData, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};
+
+export const getJobById = async (jobId, user) => {
+  try {
+    const res = await axiosInstance.get(`/jobs/${jobId}`, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};

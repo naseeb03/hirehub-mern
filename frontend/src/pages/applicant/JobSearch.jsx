@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import ResumeModal from '../../components/ResumeModal';
 import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
-import { getJobs, getSavedJobs, saveJob } from '../../lib/api';
+import { getJobs, getSavedJobs, saveJob, unsaveJob } from '../../lib/api';
 
 function JobSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -12,15 +13,15 @@ function JobSearch() {
     location: '',
     jobType: 'all',
   });
-
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedJobId, setSelectedJobId] = useState(null);
   const user = useSelector((state) => state.auth.user);
   const { applyJob, showModal, setShowModal } = useApplyJob();
   const [savedJobs, setSavedJobs] = useState([]);
+  const [selectedJobId, setSelectedJobId] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -39,7 +40,6 @@ function JobSearch() {
     const fetchSavedJobs = async () => {
       try {
         if (!user) return;
-
         const response = await getSavedJobs(user);
         setSavedJobs(response);
       } catch (error) {
@@ -66,26 +66,44 @@ function JobSearch() {
     setFilteredJobs(filtered);
   };
 
-  const handleSaveJob = async (jobId) => {
+  const handleToggleSaveJob = async (jobId) => {
     const currentSavedJobs = Array.isArray(savedJobs) ? savedJobs : [];
+    const isJobSaved = currentSavedJobs.some(job => job._id === jobId);
 
-    if (currentSavedJobs.some(job => job._id === jobId)) {
-      toast.error('Job already saved');
-      return;
+    if (isJobSaved) {
+      await handleUnsaveJob(jobId);
+    } else {
+      await handleSaveJob(jobId);
     }
+  };
 
+  const handleSaveJob = async (jobId) => {
     try {
       if (!user) {
         toast.error('You must be logged in to save a job.');
         return;
-      };
+      }
       const response = await saveJob(user, jobId);
-
       toast.success(response.message || 'Job saved successfully!');
-      setSavedJobs([...currentSavedJobs, { _id: jobId }]);
+      setSavedJobs([...savedJobs, { _id: jobId }]);
     } catch (error) {
       console.error('Error saving job:', error);
       toast.error('Failed to save job.');
+    }
+  };
+
+  const handleUnsaveJob = async (jobId) => {
+    try {
+      if (!user) {
+        toast.error('You must be logged in to unsave a job.');
+        return;
+      }
+      const response = await unsaveJob(user, jobId);
+      toast.success(response.message || 'Job unsaved successfully!');
+      setSavedJobs(savedJobs.filter(job => job._id !== jobId));
+    } catch (error) {
+      console.error('Error unsaving job:', error);
+      toast.error('Failed to unsave job.');
     }
   };
 
@@ -105,6 +123,10 @@ function JobSearch() {
     }
     setSelectedJobId(jobId);
     setShowModal(true);
+  };
+
+  const handleViewDetails = (jobId) => {
+    navigate(`/jobs/${jobId}`);
   };
 
   return (
@@ -165,8 +187,8 @@ function JobSearch() {
       <div className="space-y-4">
         {loading ? (
           <div className="flex items-center justify-center">
-          <div className='loader'></div>
-        </div>
+            <div className='loader'></div>
+          </div>
         ) : (
           <>
             {error && <p className="text-red-600">{error}</p>}
@@ -187,16 +209,22 @@ function JobSearch() {
                     </div>
                     <div className="space-x-2">
                       <button
+                        onClick={() => handleViewDetails(job._id)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                      >
+                        View Details
+                      </button>
+                      <button
                         onClick={() => handleApplyJob(job._id)}
                         className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
                       >
                         Apply Now
                       </button>
                       <button
-                        onClick={() => handleSaveJob(job._id)}
-                        className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+                        onClick={() => handleToggleSaveJob(job._id)}
+                        className={`px-4 py-2 rounded-md ${savedJobs.some(savedJob => savedJob._id === job._id) ? 'bg-yellow-600 text-white hover:bg-yellow-700' : 'bg-yellow-500 text-white hover:bg-yellow-600'}`}
                       >
-                        Save Job
+                        {savedJobs.some(savedJob => savedJob._id === job._id) ? 'Unsave Job' : 'Save Job'}
                       </button>
                     </div>
                   </div>

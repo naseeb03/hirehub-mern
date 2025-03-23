@@ -4,10 +4,13 @@ import { Link } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
 import BackButton from '../../components/BackButton';
 import { getUserJobs } from '../../lib/api';
+import JobDetailsModal from '../../components/JobDetailsModal';
 
 function JobPostings() {
   const [jobPostings, setJobPostings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -24,6 +27,16 @@ function JobPostings() {
     };
     fetchJobs();
   }, [user]);
+
+  const openModal = (jobId) => {
+    setSelectedJobId(jobId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedJobId(null);
+    setIsModalOpen(false);
+  };
 
   return (
     <div className='flex items-center justify-center'>
@@ -45,20 +58,24 @@ function JobPostings() {
                     <h4 className="font-medium"><strong>Title:</strong> {job.title}</h4>
                     <p className="text-gray-600"><strong>Company:</strong> {job.company}</p>
                     <p className="text-gray-500 text-sm"><strong>Location:</strong> {job.location}</p>
-                    <span className={`inline-block px-2 py-1 rounded text-sm mt-2 ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    <span className={`inline-block px-2 py-1 rounded text-sm mt-2 ${job.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                       Status: {job.status}
                     </span>
                   </div>
                   
-                  <Link to="/profile" className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
-                    <FiEdit className="mr-2" /> Edit Job
-                  </Link>
+                  <button onClick={() => openModal(job._id)} className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+                    <FiEdit className="mr-2" /> View Details
+                  </button>
                 </div>
               ))
             )}
           </div>
         </div>
       </div>
+
+      {selectedJobId && (
+        <JobDetailsModal jobId={selectedJobId} isOpen={isModalOpen} onClose={closeModal} user={user} />
+      )}
     </div>
   );
 }
