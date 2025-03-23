@@ -40,7 +40,15 @@ const jobSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'closed'],
     default: 'active'
-  }
+  },
+  applications: { 
+    type: Number, 
+    default: 0 
+  },
+  views: { 
+    type: Number, 
+    default: 0 
+  },
 }, 
 {
   timestamps: true
