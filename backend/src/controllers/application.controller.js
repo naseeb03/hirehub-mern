@@ -1,6 +1,7 @@
 import Application from '../models/Application.js';
 import Job from '../models/Job.js';
 import asyncHandler from '../middleware/async.js';
+import { sendMail } from '../config/nodemailer.js';
 
 export const applyForJob = async (req, res) => {
   try {
@@ -52,7 +53,7 @@ export const applyForJob = async (req, res) => {
 
 export const updateApplicationStatus = async (req, res) => {
   try {
-    const application = await Application.findById(req.params.id).populate('job');
+    const application = await Application.findById(req.params.id).populate('job').populate('applicant');
 
     if (!application) {
       return res.status(404).json({
@@ -70,6 +71,15 @@ export const updateApplicationStatus = async (req, res) => {
 
     application.status = req.body.status;
     await application.save();
+
+    if (req.body.status === 'shortlisted') {
+      const applicantEmail = application.applicant.email;
+      console.log(applicantEmail)
+      const subject = 'Congratulations! You have been shortlisted';
+      const text = `Dear ${application.applicant.name},\n\nCongratulations! You have been shortlisted for the position of ${application.job.title}. We will contact you soon with further details.\n\nBest regards,\n${application.job.company}`;
+
+      await sendMail(applicantEmail, subject, text);
+    }
 
     return res.status(200).json({
       success: true,
