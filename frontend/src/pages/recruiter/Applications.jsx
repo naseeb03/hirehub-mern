@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
 import { Link } from 'react-router-dom';
-import { getRecruiterApplications } from '../../lib/api';
+import { getRecruiterApplications, updateApplication } from '../../lib/api';
 
 function AllApplications() {
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [statusChanged, setStatusChanged] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -24,15 +25,21 @@ function AllApplications() {
     };
 
     fetchApplications();
-  }, [user]);
+  }, [user, statusChanged]);
 
-  const handleStatusChange = (applicationId, newStatus) => {
-    setApplications(applications.map(app => {
-      if (app._id === applicationId) {
-        return { ...app, status: newStatus };
-      }
-      return app;
-    }));
+  const handleStatusChange = async (applicationId, newStatus) => {
+    try {
+      const updatedApplication = await updateApplication(user, applicationId, newStatus);
+      setApplications(applications.map(app => {
+        if (app._id === applicationId) {
+          return { ...app, status: updatedApplication.status };
+        }
+        return app;
+      }));
+      setStatusChanged(!statusChanged);
+    } catch (error) {
+      console.error('Error updating application status:', error.message);
+    }
   };
 
   const filteredApplications = applications.filter(app => {

@@ -21,8 +21,8 @@ router.put(
   '/applications/:id/status',
   protect,
   authorize('recruiter'),
-  applicationStatusValidator,
-  validate,
+  // applicationStatusValidator,
+  // validate,
   updateApplicationStatus
 );
 

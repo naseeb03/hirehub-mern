@@ -236,3 +236,19 @@ export const getJobById = async (jobId, user) => {
     throw new Error(err.response.data.message);
   }
 };
+
+export const updateApplication = async (user, applicationId, status) => {
+  try {
+    const res = await axiosInstance.put(`/recruiters/applications/${applicationId}/status`, 
+      { status }, // Ensure status is sent as an object
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        }
+      }
+    );
+    return res.data; // Ensure the function returns the response data
+  } catch (err) {
+    throw new Error(err.response?.data?.message || 'Error updating application status'); // Properly handle and throw the error
+  }
+}
