@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-// import ResumeModal from '../../components/ResumeModal';
-// import useApplyJob from '../../hooks/useApplyJob';
 import { toast } from 'react-hot-toast';
 import BackButton from '../../components/BackButton';
 import { getJobs, getSavedJobs, saveJob, unsaveJob } from '../../lib/api';
@@ -18,9 +16,7 @@ function JobSearch() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const user = useSelector((state) => state.auth.user);
-  // const { applyJob, showModal, setShowModal } = useApplyJob();
   const [savedJobs, setSavedJobs] = useState([]);
-  const [selectedJobId, setSelectedJobId] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,9 +37,10 @@ function JobSearch() {
       try {
         if (!user) return;
         const response = await getSavedJobs(user);
-        setSavedJobs(response);
+        setSavedJobs(Array.isArray(response) ? response : []);
       } catch (error) {
         console.error('Error fetching saved jobs:', error);
+        setSavedJobs([]);
       }
     };
 
@@ -116,26 +113,12 @@ function JobSearch() {
     setFilteredJobs(jobs);
   };
 
-  // const handleApplyJob = (jobId) => {
-  //   if (!user) {
-  //     toast.error('You must be logged in to apply for a job.');
-  //     return;
-  //   }
-  //   setSelectedJobId(jobId);
-  //   setShowModal(true);
-  // };
-
   const handleViewDetails = (jobId) => {
     navigate(`/jobs/${jobId}`);
   };
 
   return (
     <div className="space-y-6">
-      {/* <ResumeModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        jobId={selectedJobId}
-      /> */}
       <div className="flex mb-4">
         <BackButton />
         <h1 className="text-2xl font-bold ml-2">Search Jobs</h1>
@@ -216,12 +199,6 @@ function JobSearch() {
                         >
                           View Details
                         </button>
-                        {/* <button
-                          onClick={() => handleApplyJob(job._id)}
-                          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-                        >
-                          Apply Now
-                        </button> */}
                         <button
                           onClick={() => handleToggleSaveJob(job._id)}
                           className={`px-4 py-2 rounded-md ${isJobSaved ? "bg-red-500 text-white hover:bg-red-600" : 'bg-yellow-500 text-white hover:bg-yellow-600'}`}

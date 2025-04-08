@@ -24,8 +24,10 @@ function JobDetailsPage() {
       try {
         const jobData = await getJobById(jobId, user);
         setJob(jobData);
+
         if (user) {
-          const savedJobs = await getSavedJobs(user);
+          const response = await getSavedJobs(user);
+          const savedJobs = Array.isArray(response) ? response : [];
           setIsJobSaved(savedJobs.some(savedJob => savedJob._id === jobId));
         }
       } catch (err) {
@@ -34,6 +36,7 @@ function JobDetailsPage() {
         setLoading(false);
       }
     };
+
     fetchJob();
   }, [jobId, user]);
 
