@@ -54,6 +54,16 @@ const jobSchema = new mongoose.Schema({
   timestamps: true
 });
 
+jobSchema.methods.incrementApplications = function() {
+  this.applications += 1;
+  return this.save();
+};
+
+jobSchema.methods.incrementViews = function() {
+  this.views += 1;
+  return this.save();
+};
+
 const Job = mongoose.model('Job', jobSchema);
 
 export default Job;

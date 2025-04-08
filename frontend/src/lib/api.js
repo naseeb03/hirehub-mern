@@ -209,6 +209,12 @@ export const applyToJob = async (user, formData, jobId) => {
         },
       }
     );
+
+    await axiosInstance.post(`/jobs/${jobId}/increment-applications`, {}, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
     return res.data;
   } catch (err) {
     throw new Error(err.response.data.message);

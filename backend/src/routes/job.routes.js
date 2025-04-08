@@ -7,6 +7,7 @@ import {
   updateJob,
   getJobsByRecruiter
 } from '../controllers/job.controller.js';
+import Job from '../models/Job.js';
 
 const router = express.Router();
 
@@ -40,5 +41,31 @@ router.get(
   authorize('recruiter'),
   getJobsByRecruiter
 );
+
+router.post('/:id/increment-applications', async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).send('Job not found');
+    }
+    await job.incrementApplications();
+    res.send('Applications incremented');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+router.post('/:id/increment-views', async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).send('Job not found');
+    }
+    await job.incrementViews();
+    res.send('Views incremented');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
 
 export default router;
