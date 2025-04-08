@@ -43,15 +43,18 @@ function YourApplications() {
                 <h4 className="font-medium">{app.job.title}</h4>
                 <p className="text-gray-600">{app.job.company}</p>
                 <span
-                  className={`inline-block px-2 py-1 rounded text-sm ${app.status === 'Pending'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : app.status === 'Reviewed'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                >
-                  {app.status}
-                </span>
+  className={`inline-block px-2 py-1 rounded text-sm ${
+    app.status === 'pending'
+      ? 'bg-yellow-100 text-yellow-800'
+      : app.status === 'shortlisted'
+      ? 'bg-green-100 text-green-800'
+      : app.status === 'rejected'
+      ? 'bg-red-100 text-red-800'
+      : 'bg-gray-100 text-gray-800'
+  }`}
+>
+  {app.status}
+</span>
               </div>
             ))}
           </div>
