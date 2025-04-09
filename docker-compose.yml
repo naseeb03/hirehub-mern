@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend  # Path to the frontend directory
+    env_file:
+      - ./frontend/.env  # Path to the frontend .env file
+    ports:
+      - "5173:5173"  # Exposing port 5173 of the frontend container to port 3000
+    networks:
+      - hirehub-network
+
+  backend:
+    build:
+      context: ./backend  # Path to the backend directory
+    env_file:
+      - ./backend/.env  # Path to the backend .env file
+    ports:
+      - "5000:5000"  # Exposing port 5000 of the backend container to port 5000
+    networks:
+      - hirehub-network
+
+networks:
+  hirehub-network:
+    driver: bridge
