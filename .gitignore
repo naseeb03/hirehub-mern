@@ -26,6 +26,7 @@ jspm_packages/
 .env
 .env.local
 .env.*.local
+/env/
 
 # Build output directories
 build/
@@ -83,6 +84,7 @@ dist/
 # MongoDB data files
 /data/db/
 dump/
+data/
 
 # Binaries
 *.exe
@@ -97,3 +99,17 @@ dump/
 
 # Static environment files
 *.local
+
+# FastAPI specific
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Python virtual environments
+env/
+.env/
+
+# FastAPI generated files
+*.db
+*.sqlite3
+*.json

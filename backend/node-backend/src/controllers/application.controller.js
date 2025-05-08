@@ -2,6 +2,7 @@ import Application from '../models/Application.js';
 import Job from '../models/Job.js';
 import asyncHandler from '../middleware/async.js';
 import { sendMail } from '../config/nodemailer.js';
+import axios from 'axios';
 
 export const applyForJob = async (req, res) => {
   try {
@@ -27,8 +28,15 @@ export const applyForJob = async (req, res) => {
     }
 
     let resumeUrl = null;
+    let filename = null;
     if (req.file && req.file.cloudinaryUrl) {
       resumeUrl = req.file.cloudinaryUrl;
+      filename = req.file.originalname || `resume-${req.user._id}.pdf`;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Resume file is required',
+      });
     }
 
     const application = await Application.create({
@@ -37,6 +45,17 @@ export const applyForJob = async (req, res) => {
       resume: resumeUrl,
       coverLetter: req.body.coverLetter,
     });
+
+    try {
+      const fastapiResponse = await axios.post('http://localhost:8000/upload_cv/', {
+        cloudinary_url: resumeUrl,
+        filename,
+        job_id: req.params.jobId,
+      });
+      console.log('FastAPI CV processing:', fastapiResponse.data);
+    } catch (fastapiError) {
+      console.error('Failed to process CV in FastAPI:', fastapiError.message);
+    }
 
     return res.status(201).json({
       success: true,
@@ -50,6 +69,16 @@ export const applyForJob = async (req, res) => {
     });
   }
 };
+
+export const searchApplicants = async (req, res) => {
+  const { query } = req.body;
+  try {
+      const response = await axios.post('http://localhost:8000/search_applicants/', { query });
+      res.json(response.data);
+  } catch (error) {
+      res.status(error.response?.status || 500).json({ error: error.message });
+  }
+}
 
 export const updateApplicationStatus = async (req, res) => {
   try {

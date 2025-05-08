@@ -1,7 +1,7 @@
 import express from 'express';
 import { protect, authorize } from '../middleware/auth.js';
 import { handleFileUpload } from '../middleware/upload.js';
-import { applyForJob, getUserApplications } from '../controllers/application.controller.js';
+import { applyForJob, getUserApplications, searchApplicants } from '../controllers/application.controller.js';
 import { saveJob, getSavedJobs, unsaveJob } from '../controllers/savedjobs.controller.js';
 
 const router = express.Router();
@@ -12,6 +12,11 @@ router.post(
   authorize('applicant'),
   handleFileUpload,
   applyForJob
+);
+
+router.post(
+  '/cv/search',
+  searchApplicants
 );
 
 router.post(
