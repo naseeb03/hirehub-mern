@@ -51,6 +51,7 @@ export const applyForJob = async (req, res) => {
         cloudinary_url: resumeUrl,
         filename,
         job_id: req.params.jobId,
+        applicant_id: req.user._id.toString()
       });
       console.log('FastAPI CV processing:', fastapiResponse.data);
     } catch (fastapiError) {
@@ -71,14 +72,45 @@ export const applyForJob = async (req, res) => {
 };
 
 export const searchApplicants = async (req, res) => {
-  const { query } = req.body;
-  try {
-      const response = await axios.post('http://localhost:8000/search_applicants/', { query });
-      res.json(response.data);
-  } catch (error) {
-      res.status(error.response?.status || 500).json({ error: error.message });
+  const { query, jobId } = req.body;
+
+  if (!query || !jobId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Query and jobId are required',
+    });
   }
-}
+
+  try {
+    // Send query and jobId to FastAPI
+    const fastapiResponse = await axios.post('http://localhost:8000/search_applicants/', {
+      query,
+      job_id: jobId,
+    });
+
+    const { applicant_ids } = fastapiResponse.data;
+
+    if (!applicant_ids || applicant_ids.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    // Fetch applications from MongoDB for the returned applicant_ids
+    const applications = await Application.find({
+      job: jobId,
+      applicant: { $in: applicant_ids },
+    })
+      .populate('job')
+      .populate('applicant', 'name email')
+      .sort('-createdAt');
+
+    return res.status(200).json(applications);
+  } catch (error) {
+    return res.status(error.response?.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 export const updateApplicationStatus = async (req, res) => {
   try {

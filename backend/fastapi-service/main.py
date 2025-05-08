@@ -7,7 +7,6 @@ import requests
 import PyPDF2
 import nltk
 from sentence_transformers import SentenceTransformer
-import uuid
 import io
 
 # Initialize FastAPI app
@@ -38,9 +37,11 @@ class CVUpload(BaseModel):
     cloudinary_url: str
     filename: str
     job_id: str  # To associate CV with job application
+    applicant_id: str  # Applicant ID from MongoDB
 
 class CVQuery(BaseModel):
     query: str  # e.g., "MERN stack with 3 years of experience"
+    job_id: str  # To filter CVs by job
 
 # Function to fetch and extract text from Cloudinary PDF URL
 def extract_text_from_cloudinary(url: str) -> str:
@@ -70,8 +71,8 @@ async def upload_cv(cv_data: CVUpload):
     # Extract text from Cloudinary URL
     cv_text = extract_text_from_cloudinary(cv_data.cloudinary_url)
 
-    # Generate unique ID for the applicant
-    applicant_id = str(uuid.uuid4())
+    # Use the provided applicant_id from MongoDB
+    applicant_id = cv_data.applicant_id
 
     # Store in ChromaDB as a single document
     try:
@@ -89,32 +90,26 @@ async def upload_cv(cv_data: CVUpload):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error storing CV: {str(e)}")
 
-# Endpoint to query applicants by general query
+# Endpoint to query applicants by general query for a specific job
 @app.post("/search_applicants/")
 async def search_applicants(query: CVQuery):
     if not query.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
+    if not query.job_id.strip():
+        raise HTTPException(status_code=400, detail="Job ID cannot be empty")
 
     try:
-        # Query ChromaDB for top 5 matching CVs
+        # Query ChromaDB for top 5 matching CVs filtered by job_id
         results = collection.query(
             query_texts=[query.query],
-            n_results=5
+            n_results=5,
+            where={"job_id": query.job_id}  # Filter by job_id
         )
 
-        # Process results
-        applicants = []
-        for idx, doc_id in enumerate(results["ids"][0]):
-            metadata = results["metadatas"][0][idx]
-            applicants.append({
-                "applicant_id": metadata["applicant_id"],
-                "filename": metadata["filename"],
-                "cloudinary_url": metadata["cloudinary_url"],
-                "job_id": metadata["job_id"],
-                "distance": results["distances"][0][idx]  # Similarity score
-            })
+        # Process results to return only applicant IDs
+        applicant_ids = [metadata["applicant_id"] for metadata in results["metadatas"][0]]
 
-        return {"applicants": applicants}
+        return {"applicant_ids": applicant_ids}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error querying applicants: {str(e)}")
 
