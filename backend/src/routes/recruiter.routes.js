@@ -3,7 +3,8 @@ import { protect, authorize } from '../middleware/auth.js';
 import { 
   getApplications, 
   updateApplicationStatus, 
-  getRecruiterApplications 
+  getRecruiterApplications, 
+  getRecruiterJobs
 } from '../controllers/application.controller.js';
 import { applicationStatusValidator } from '../validators/application.validator.js';
 import { validate } from '../middleware/validate.js';
@@ -27,10 +28,16 @@ router.put(
 );
 
 router.get(
-  '/recruiter/:recruiterId',
+  '/recruiter/:jobId',
   protect,
   authorize('recruiter'),
   getRecruiterApplications
+);
+
+router.get('/recruiter/jobs/:recruiterId',
+  protect,
+  authorize('recruiter'),
+  getRecruiterJobs
 );
 
 export default router;

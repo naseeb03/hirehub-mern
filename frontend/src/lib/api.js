@@ -125,9 +125,9 @@ export const unsaveJob = async (user, jobId) => {
   }
 };
 
-export const getRecruiterApplications = async (user) => {
+export const getRecruiterApplications = async (user, job) => {
   try {
-    const res = await axiosInstance.get(`/recruiters/recruiter/${user.id}`, 
+    const res = await axiosInstance.get(`/recruiters/recruiter/${job}`, 
       {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -257,4 +257,19 @@ export const updateApplication = async (user, applicationId, status) => {
   } catch (err) {
     throw new Error(err.response?.data?.message || 'Error updating application status'); // Properly handle and throw the error
   }
-}
+};
+
+export const fetchRecruiterJobs = async(user) => {
+  try {
+    const res = await axiosInstance.get(`/recruiters/recruiter/jobs/${user.id}`, 
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+};

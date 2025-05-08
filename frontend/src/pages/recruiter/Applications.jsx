@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BackButton from '../../components/BackButton';
 import { Link } from 'react-router-dom';
-import { getRecruiterApplications, updateApplication } from '../../lib/api';
+import { fetchRecruiterJobs, getRecruiterApplications, updateApplication } from '../../lib/api';
 
 function AllApplications() {
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -14,8 +16,8 @@ function AllApplications() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        if (!user) return;
-        const response = await getRecruiterApplications(user);
+        if (!user || !selectedJob) return;
+        const response = await getRecruiterApplications(user, selectedJob);
         setApplications(response);
       } catch (error) {
         console.error('Error fetching applications:', error);
@@ -25,7 +27,20 @@ function AllApplications() {
     };
 
     fetchApplications();
-  }, [user, statusChanged]);
+  }, [user, statusChanged, selectedJob]);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        if (!user) return;
+        const response = await fetchRecruiterJobs(user);
+        setJobs(response);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+    fetchJobs();
+  }, [user]);
 
   const handleStatusChange = async (applicationId, newStatus) => {
     try {
@@ -65,6 +80,19 @@ function AllApplications() {
           <option value="rejected">Rejected</option>
         </select>
       </div>
+
+      <select
+        value={selectedJob}
+        onChange={(e) => setSelectedJob(e.target.value)}
+        className="p-2 border rounded-md"
+      >
+        <option value="">Select a Job</option>
+        {jobs.map((job) => (
+          <option key={job._id} value={job._id}>
+            {job.title}
+          </option>
+        ))}
+      </select>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {loading ? (

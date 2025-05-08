@@ -132,10 +132,9 @@ export const getUserApplications = asyncHandler(async (req, res) => {
 
 export const getRecruiterApplications = asyncHandler(async (req, res) => {
   try {
-    const jobs = await Job.find({ recruiter: req.params.recruiterId }).select('_id');
-    const jobIds = jobs.map(job => job._id);
+    const { jobId } = req.params;
 
-    const applications = await Application.find({ job: { $in: jobIds } })
+    const applications = await Application.find({ job: jobId })
       .populate('job')
       .populate('applicant', 'name email')
       .sort('-createdAt');
@@ -148,3 +147,12 @@ export const getRecruiterApplications = asyncHandler(async (req, res) => {
     });
   }
 });
+
+export const getRecruiterJobs = async(req, res) => {
+  try {
+    const jobs = await Job.find({ recruiter: req.params.recruiterId });
+    res.status(200).json(jobs);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching jobs', error });
+  }
+};
