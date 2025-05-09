@@ -82,33 +82,45 @@ export const searchApplicants = async (req, res) => {
   }
 
   try {
-    // Send query and jobId to FastAPI
     const fastapiResponse = await axios.post('http://localhost:8000/search_applicants/', {
       query,
       job_id: jobId,
     });
-    console.log(fastapiResponse.data)
 
-    const { applicant_ids } = fastapiResponse.data;
+    const applicants = fastapiResponse.data.applicants || [];
 
-    if (!applicant_ids || applicant_ids.length === 0) {
-      return res.status(200).json([]);
+    if (!applicants.length) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+      });
     }
 
-    // Fetch applications from MongoDB for the returned applicant_ids
+    const applicantIds = applicants.map(applicant => applicant.applicant_id);
+
     const applications = await Application.find({
       job: jobId,
-      applicant: { $in: applicant_ids },
+      applicant: { $in: applicantIds },
     })
       .populate('job')
       .populate('applicant', 'name email')
       .sort('-createdAt');
 
-    return res.status(200).json(fastapiResponse.data);
+    const enrichedApplicants = applicants.map(applicant => {
+      const application = applications.find(app => app.applicant._id.toString() === applicant.applicant_id);
+      return {
+        statement: applicant.statement,
+        application
+      };
+    });
+
+    return res.status(200).json(enrichedApplicants);
   } catch (error) {
-    return res.status(error.response?.status || 500).json({
+    const status = error.response ? error.response.status : 500;
+    const message = error.response?.data?.detail || error.message || 'Internal server error';
+    return res.status(status).json({
       success: false,
-      message: error.message,
+      message,
     });
   }
 };
