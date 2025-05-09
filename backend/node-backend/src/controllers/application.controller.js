@@ -87,6 +87,7 @@ export const searchApplicants = async (req, res) => {
       query,
       job_id: jobId,
     });
+    console.log(fastapiResponse.data)
 
     const { applicant_ids } = fastapiResponse.data;
 
@@ -103,7 +104,7 @@ export const searchApplicants = async (req, res) => {
       .populate('applicant', 'name email')
       .sort('-createdAt');
 
-    return res.status(200).json(applications);
+    return res.status(200).json(fastapiResponse.data);
   } catch (error) {
     return res.status(error.response?.status || 500).json({
       success: false,
