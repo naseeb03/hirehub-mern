@@ -3,21 +3,31 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./frontend  # Path to the frontend directory
+      context: ./frontend
     env_file:
-      - ./frontend/.env  # Path to the frontend .env file
+      - ./frontend/.env
     ports:
-      - "5173:5173"  # Exposing port 5173 of the frontend container to port 3000
+      - "5173:5173"
     networks:
       - hirehub-network
 
-  backend:
+  node-backend:
     build:
-      context: ./backend  # Path to the backend directory
+      context: ./backend/node-backend
     env_file:
-      - ./backend/.env  # Path to the backend .env file
+      - ./backend/node-backend/.env
     ports:
-      - "5000:5000"  # Exposing port 5000 of the backend container to port 5000
+      - "5000:5000"
+    networks:
+      - hirehub-network
+
+  fastapi-service:
+    build:
+      context: ./backend/fastapi-service
+    env_file:
+      - ./backend/fastapi-service/.env
+    ports:
+      - "8000:8000"
     networks:
       - hirehub-network
 
