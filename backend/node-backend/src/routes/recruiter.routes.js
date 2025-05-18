@@ -4,7 +4,8 @@ import {
   getApplications, 
   updateApplicationStatus, 
   getRecruiterApplications, 
-  getRecruiterJobs
+  getRecruiterJobs,
+  searchApplicants
 } from '../controllers/application.controller.js';
 import { applicationStatusValidator } from '../validators/application.validator.js';
 import { validate } from '../middleware/validate.js';
@@ -16,6 +17,13 @@ router.get(
   protect, 
   authorize('recruiter'), 
   getApplications
+);
+
+router.post(
+  '/cv/search',
+  protect,
+  authorize('recruiter'),
+  searchApplicants
 );
 
 router.put(

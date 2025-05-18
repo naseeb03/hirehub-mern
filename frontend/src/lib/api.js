@@ -273,3 +273,20 @@ export const fetchRecruiterJobs = async(user) => {
     throw new Error(err.response.data.message);
   }
 };
+
+export const searchApplicants = async (user, { query, jobId }) => {
+  try {
+    const res = await axiosInstance.post(
+      '/recruiters/cv/search',
+      { query, jobId },
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || 'Error searching applications');
+  }
+};

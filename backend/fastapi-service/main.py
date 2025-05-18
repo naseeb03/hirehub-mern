@@ -82,7 +82,7 @@ def construct_prompt(query: str, cvs: list, applicant_ids: list) -> str:
     4. For each relevant CV, provide a short statement (1-2 sentences) explaining why it fulfills the query.
 
     CVs:
-    {json.dumps({aid: cv[:1000] for aid, cv in zip(applicant_ids, cvs)}, indent=2)}
+    {json.dumps({aid: cv[:1500] for aid, cv in zip(applicant_ids, cvs)}, indent=2)}
 
     Return a JSON object with:
     - 'applicants': A list of objects with 'applicant_id' and 'statement' for each relevant CV, sorted by relevance.
@@ -91,10 +91,17 @@ def construct_prompt(query: str, cvs: list, applicant_ids: list) -> str:
     Example output:
     {{
       "applicants": [
-        {{"applicant_id": "id1", "statement": "This applicant has 3 years of Shopify experience."}},
-        {{"applicant_id": "id2", "statement": "This applicant has 1 year of Shopify work."}}
+        {{"applicant_id": "id1", "statement": "This applicant has 3 years of Shopify experience and has built multiple e-commerce platforms."}},
+        {{"applicant_id": "id2", "statement": "This applicant has 1 year of Shopify work and shows strong potential."}}
       ]
     }}
+
+    Focus on:
+    1. Technical skills and experience level mentioned in the query
+    2. Relevant projects and achievements
+    3. Years of experience if specified
+    4. Industry-specific knowledge
+    5. Soft skills if mentioned in the query
     """
 
 async def call_groq_llm(query: str, cvs: list, applicant_ids: list) -> dict:
@@ -111,7 +118,7 @@ async def call_groq_llm(query: str, cvs: list, applicant_ids: list) -> dict:
                     "model": "meta-llama/llama-4-scout-17b-16e-instruct",
                     "messages": [{"role": "user", "content": prompt}],
                     "response_format": {"type": "json_object"},
-                    "max_tokens": 500,
+                    "max_tokens": 800,
                     "temperature": 0.3
                 }
             ) as response:
@@ -144,7 +151,7 @@ async def call_llm(query: str, cvs: list, applicant_ids: list) -> dict:
             generation_config={
                 "response_mime_type": "application/json",
                 "temperature": 0.3,
-                "max_output_tokens": 500,
+                "max_output_tokens": 800,
             }
         )
         try:
@@ -185,6 +192,7 @@ async def search_applicants(query: CVQuery):
     if not query.job_id.strip():
         raise HTTPException(status_code=400, detail="Job ID cannot be empty")
     try:
+        # First, get the most relevant CVs using semantic search
         results = collection.query(
             query_texts=[query.query],
             n_results=5,
@@ -192,8 +200,11 @@ async def search_applicants(query: CVQuery):
         )
         cv_texts = results["documents"][0]
         applicant_ids = [metadata["applicant_id"] for metadata in results["metadatas"][0]]
+        
         if not cv_texts:
             return {"applicants": []}
+            
+        # Then use LLM to analyze and rank the CVs
         llm_result = await call_llm(query.query, cv_texts, applicant_ids)
         return llm_result
     except Exception as e:
