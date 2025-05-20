@@ -56,6 +56,9 @@ class CVQuery(BaseModel):
     query: str
     job_id: str
 
+class SkillExtractionRequest(BaseModel):
+    text: str
+
 def extract_text_from_cloudinary(url: str) -> str:
     response = requests.get(url)
     response.raise_for_status()
@@ -166,6 +169,56 @@ async def call_llm(query: str, cvs: list, applicant_ids: list) -> dict:
     except Exception:
         return await call_groq_llm(query, cvs, applicant_ids)
 
+async def call_llm_for_skills(text: str) -> str:
+    prompt = f"""Extract technical skills and programming languages from the following job description.
+    Return ONLY a JSON array of skills, with no additional text or explanation.
+    Focus on technical skills, programming languages, frameworks, tools, and technologies.
+    Example output format: ["Python", "React", "AWS"]
+    
+    Job Description:
+    {text}"""
+
+    if not HAS_GEMINI_KEY:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {GROQ_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+                        "messages": [{"role": "user", "content": prompt}],
+                        "response_format": {"type": "json_object"},
+                        "max_tokens": 800,
+                        "temperature": 0.3
+                    }
+                ) as response:
+                    if response.status != 200:
+                        raise HTTPException(status_code=500, detail="Groq API request failed")
+                    
+                    result = await response.json()
+                    return result.get("choices", [{}])[0].get("message", {}).get("content", "[]")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Groq API error: {str(e)}")
+    
+    try:
+        model = GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content(
+            prompt,
+            generation_config={
+                "response_mime_type": "application/json",
+                "temperature": 0.3,
+                "max_output_tokens": 800,
+            }
+        )
+        return response.text
+    except ResourceExhausted:
+        return await call_llm_for_skills(text)  # Retry with Groq
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"LLM error: {str(e)}")
+
 @app.post("/upload_cv/")
 async def upload_cv(cv_data: CVUpload):
     try:
@@ -209,6 +262,40 @@ async def search_applicants(query: CVQuery):
         return llm_result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error querying applicants: {str(e)}")
+
+@app.post("/extract-skills/")
+async def extract_skills(request: SkillExtractionRequest):
+    try:
+        response = await call_llm_for_skills(request.text)
+        
+        try:
+            # Parse the response as JSON
+            skills = json.loads(response)
+            if isinstance(skills, list):
+                # Clean and normalize the skills
+                cleaned_skills = [
+                    skill.strip() 
+                    for skill in skills 
+                    if isinstance(skill, str) and skill.strip()
+                ]
+                return {"skills": sorted(cleaned_skills)}
+        except json.JSONDecodeError:
+            # If the response isn't valid JSON, try to extract skills from the text
+            # Split by common delimiters and clean
+            skills = [
+                skill.strip() 
+                for skill in response.replace('[', '').replace(']', '').split(',')
+                if skill.strip()
+            ]
+            return {"skills": sorted(skills)}
+
+        return {"skills": []}
+    except Exception as e:
+        print(f"Error in extract_skills: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error extracting skills: {str(e)}"
+        )
 
 @app.get("/health")
 async def health_check():

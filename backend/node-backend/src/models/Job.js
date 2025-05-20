@@ -36,6 +36,10 @@ const jobSchema = new mongoose.Schema({
   benefits: {
     type: String
   },
+  skills: [{
+    type: String,
+    trim: true
+  }],
   status: {
     type: String,
     enum: ['active', 'closed'],

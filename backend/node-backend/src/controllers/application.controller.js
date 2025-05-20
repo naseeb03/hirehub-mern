@@ -3,6 +3,7 @@ import Job from '../models/Job.js';
 import asyncHandler from '../middleware/async.js';
 import { sendMail } from '../config/nodemailer.js';
 import axios from 'axios';
+const FASTAPI_URL = process.env.FASTAPI_URL;
 
 export const applyForJob = async (req, res) => {
   try {
@@ -47,7 +48,7 @@ export const applyForJob = async (req, res) => {
     });
 
     try {
-      const fastapiResponse = await axios.post('http://localhost:8000/upload_cv/', {
+      const fastapiResponse = await axios.post(`${FASTAPI_URL}/upload_cv/`, {
         cloudinary_url: resumeUrl,
         filename,
         job_id: req.params.jobId,
@@ -82,7 +83,7 @@ export const searchApplicants = async (req, res) => {
   }
 
   try {
-    const fastapiResponse = await axios.post('http://localhost:8000/search_applicants/', {
+    const fastapiResponse = await axios.post(`${FASTAPI_URL}/search_applicants/`, {
       query,
       job_id: jobId,
     });

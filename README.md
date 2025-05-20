@@ -120,6 +120,7 @@ CLIENT_URL=http://localhost:5173
 MAIL_HOST=gmail
 MAIL_PASS=your_app_password
 MAIL_USER=your_email
+FASTAPI_URL=http://localhost:8000
 ```
 
 4. Start the Node backend server:

@@ -1,17 +1,48 @@
 import Job from '../models/Job.js';
+import axios from 'axios';
 
 export const createJob = async (req, res) => {
   try {
-    const job = await Job.create({
-      ...req.body,
-      recruiter: req.user._id,
+    const { title, company, description, requirements, location, type, salary, benefits } = req.body;
+    
+    let extractedSkills = [];
+    try {
+      const combinedText = `${description} ${requirements}`;
+      console.log('Calling FastAPI at:', `${FASTAPI_URL}/extract-skills/`);
+      const fastApiResponse = await axios.post(`${FASTAPI_URL}/extract-skills/`, {
+        text: combinedText
+      });
+      
+      extractedSkills = fastApiResponse.data.skills || [];
+      console.log('Extracted skills:', extractedSkills);
+    } catch (error) {
+      console.error('Error extracting skills:', error.message);
+      if (error.response) {
+        console.error('FastAPI response:', error.response.data);
+      }
+    }
+
+    const job = new Job({
+      title,
+      company,
+      description,
+      requirements,
+      location,
+      type,
+      salary,
+      benefits,
+      skills: extractedSkills,
+      recruiter: req.user._id
     });
 
-    return res.status(201).json(job);
+    await job.save();
+    res.status(201).json(job);
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
+    console.error('Error creating job:', error);
+    res.status(500).json({ 
+      message: 'Error creating job', 
+      error: error.message,
+      details: error.response?.data || 'No additional details available'
     });
   }
 };
