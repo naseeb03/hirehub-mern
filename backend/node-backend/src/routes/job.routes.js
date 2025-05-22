@@ -5,7 +5,8 @@ import {
   getJobs,
   getJobById,
   updateJob,
-  getJobsByRecruiter
+  getJobsByRecruiter,
+  deleteJob
 } from '../controllers/job.controller.js';
 import Job from '../models/Job.js';
 
@@ -41,6 +42,8 @@ router.get(
   authorize('recruiter'),
   getJobsByRecruiter
 );
+
+router.delete('/:id', protect, authorize('recruiter'), deleteJob);
 
 router.post('/:id/increment-applications', async (req, res) => {
   try {

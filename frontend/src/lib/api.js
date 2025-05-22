@@ -290,3 +290,12 @@ export const searchApplicants = async (user, { query, jobId }) => {
     throw new Error(err.response?.data?.message || 'Error searching applications');
   }
 };
+
+export const deleteJob = async (user, jobId) => {
+  const response = await axiosInstance.delete(`/jobs/${jobId}`, {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  });
+  return response.data;
+};
