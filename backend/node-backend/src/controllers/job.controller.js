@@ -8,8 +8,7 @@ export const createJob = async (req, res) => {
     let extractedSkills = [];
     try {
       const combinedText = `${description} ${requirements}`;
-      console.log('Calling FastAPI at:', `${FASTAPI_URL}/extract-skills/`);
-      const fastApiResponse = await axios.post(`${FASTAPI_URL}/extract-skills/`, {
+      const fastApiResponse = await axios.post(`${process.env.FASTAPI_URL}/extract-skills/`, {
         text: combinedText
       });
       
@@ -18,7 +17,12 @@ export const createJob = async (req, res) => {
     } catch (error) {
       console.error('Error extracting skills:', error.message);
       if (error.response) {
-        console.error('FastAPI response:', error.response.data);
+        console.error('FastAPI response status:', error.response.status);
+        console.error('FastAPI response data:', error.response.data);
+      } else if (error.request) {
+        console.error('No response received from FastAPI. Request details:', error.request);
+      } else {
+        console.error('Error setting up request:', error.message);
       }
     }
 

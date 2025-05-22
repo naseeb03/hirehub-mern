@@ -2,25 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiBriefcase, FiFileText, FiUser, FiBookmark } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
+import { getUserJobs, getRecruiterApplications } from '../../lib/api';
 
 function RecruiterDashboard() {
   const [jobPostings, setJobPostings] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.auth.user);
   const fullName = user.name;
   const firstName = fullName.split(' ')[0];
 
   useEffect(() => {
-    setJobPostings([
-      { id: 1, title: 'Senior Developer', applicants: 12, status: 'Active' },
-      { id: 2, title: 'UI Designer', applicants: 8, status: 'Active' }
-    ]);
+    const fetchData = async () => {
+      try {
+        if (!user) return;
+        
+        // Fetch job postings
+        const jobsResponse = await getUserJobs(user);
+        setJobPostings(jobsResponse.slice(0, 2)); // Get only 2 most recent jobs
+        
+        // Fetch applications for the first job if available
+        if (jobsResponse.length > 0) {
+          const applicationsResponse = await getRecruiterApplications(user, jobsResponse[0]._id);
+          setApplications(applicationsResponse.slice(0, 2)); // Get only 2 most recent applications
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setApplications([
-      { id: 1, name: 'John Doe', position: 'Senior Developer', status: 'Under Review' },
-      { id: 2, name: 'Jane Smith', position: 'UI Designer', status: 'Shortlisted' }
-    ]);
-  }, []);
+    fetchData();
+  }, [user]);
 
   return (
     <div className="space-y-8 max-w-screen-lg mx-auto p-4">
@@ -31,17 +45,25 @@ function RecruiterDashboard() {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800">Active Job Postings</h3>
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">Recent Job Postings</h3>
           <div className="space-y-4">
-            {jobPostings.map(job => (
-              <div key={job.id} className="border-b pb-3">
-                <h4 className="text-lg font-medium text-gray-700">{job.title}</h4>
-                <p className="text-sm text-gray-600">{job.applicants} Applicants</p>
-                <span className="inline-block px-2 py-1 mt-2 text-xs font-semibold bg-green-200 text-green-800 rounded-full">
-                  {job.status}
-                </span>
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className='loader'></div>
               </div>
-            ))}
+            ) : jobPostings.length > 0 ? (
+              jobPostings.map(job => (
+                <div key={job._id} className="border-b pb-3">
+                  <h4 className="text-lg font-medium text-gray-700">{job.title}</h4>
+                  <p className="text-sm text-gray-600">{job.applications || 0} Applicants</p>
+                  <span className="inline-block px-2 py-1 mt-2 text-xs font-semibold bg-green-200 text-green-800 rounded-full">
+                    {job.status}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 text-center py-4">No job postings yet</p>
+            )}
           </div>
           <Link to="/recruiter/jobs" className="text-blue-600 hover:text-blue-800 mt-4 text-sm font-medium">
             View all job postings
@@ -51,15 +73,23 @@ function RecruiterDashboard() {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">Recent Applications</h3>
           <div className="space-y-4">
-            {applications.map(app => (
-              <div key={app.id} className="border-b pb-3">
-                <h4 className="text-lg font-medium text-gray-700">{app.name}</h4>
-                <p className="text-sm text-gray-600">{app.position}</p>
-                <span className="inline-block px-2 py-1 mt-2 text-xs font-semibold bg-yellow-200 text-yellow-800 rounded-full">
-                  {app.status}
-                </span>
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className='loader'></div>
               </div>
-            ))}
+            ) : applications.length > 0 ? (
+              applications.map(app => (
+                <div key={app._id} className="border-b pb-3">
+                  <h4 className="text-lg font-medium text-gray-700">{app.applicant.name}</h4>
+                  <p className="text-sm text-gray-600">{app.job.title}</p>
+                  <span className="inline-block px-2 py-1 mt-2 text-xs font-semibold bg-yellow-200 text-yellow-800 rounded-full">
+                    {app.status}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 text-center py-4">No applications yet</p>
+            )}
           </div>
           <Link to="/recruiter/applications" className="text-blue-600 hover:text-blue-800 mt-4 text-sm font-medium">
             View all applications
