@@ -84,7 +84,6 @@ dist/
 # MongoDB data files
 /data/db/
 dump/
-data/
 
 # Binaries
 *.exe

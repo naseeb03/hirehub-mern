@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiBriefcase, FiFileText, FiUser, FiBookmark } from 'react-icons/fi';
+import { FiBriefcase, FiFileText, FiUser, FiBookmark, FiEdit3 } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
 import { getUserApplications, getJobs } from '../../lib/api';
 
@@ -108,11 +108,11 @@ function ApplicantDashboard() {
             <span className="text-xs font-medium text-blue-700">Find Jobs</span>
           </Link>
           <Link
-            to="/applicant/applications"
+            to="/applicant/resume-builder"
             className="p-5 flex flex-col items-center justify-center bg-green-100 rounded-xl hover:bg-green-200 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            <FiFileText size={24} className="text-green-600 mb-2" />
-            <span className="text-xs font-medium text-green-700">My Applications</span>
+            <FiEdit3 size={24} className="text-green-600 mb-2" />
+            <span className="text-xs font-medium text-green-700">Resume Builder</span>
           </Link>
           <Link
             to="/profile"
