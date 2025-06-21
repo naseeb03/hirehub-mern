@@ -111,4 +111,3 @@ env/
 # FastAPI generated files
 *.db
 *.sqlite3
-*.json

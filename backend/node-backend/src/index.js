@@ -15,30 +15,7 @@ dotenv.config();
 const app = express();
 
 // CORS configuration for multiple environments
-const allowedOrigins = [
-  'http://localhost:5173', // Local development
-  'http://localhost:3000', // Alternative local port
-  'https://hirehub-mern.vercel.app', // Production Vercel frontend URL
-  'https://hirehub-mern-5d5q.vercel.app', // Production Vercel backend URL
-  process.env.CLIENT_URL // Environment variable (if set)
-].filter(Boolean); // Remove any undefined values
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-}));
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload({
@@ -52,7 +29,8 @@ app.get('/health', (req, res) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    message: 'Server is running'
+    message: 'Server is running',
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
